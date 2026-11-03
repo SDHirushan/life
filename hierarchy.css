@@ -1,0 +1,91 @@
+/* Life Quest: real calendar week/day maps */
+body.hq-active {overflow:hidden}
+.hq-overlay[hidden],.hq-picture-dialog:not([open]),.hq-goal-dialog:not([open]){display:none!important}
+.hq-overlay{position:fixed;inset:0;z-index:80;background:#0b1b14;color:#e9ebdb;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column}
+.hq-header{min-height:76px;display:flex;align-items:center;gap:12px;padding:12px 22px;border-bottom:1px solid #385042;background:#0e2018}
+.hq-brand{display:flex;flex-direction:column;gap:5px;color:#e5c784;font-weight:800;letter-spacing:2px;white-space:nowrap}
+.hq-brand small{font-size:9px;color:#9fb8a4;letter-spacing:1px}
+.hq-crumbs{display:flex;flex:1;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;min-width:0}
+.hq-crumbs button{padding:8px 10px;color:#b8ccbc;font-size:11px;background:#142b20}
+.hq-crumbs strong{font-size:12px;color:#f1d394;white-space:nowrap}
+.hq-header>button{padding:9px 13px;white-space:nowrap;font-size:11px}
+.hq-layout{display:grid;grid-template-columns:minmax(210px,250px) minmax(0,1fr) minmax(295px,330px);flex:1;min-height:0}
+.hq-sidebar,.hq-panel{overflow:auto;min-height:0;background:#12241c;padding:23px 19px}
+.hq-sidebar{border-right:1px solid #2b4537}
+.hq-panel{border-left:1px solid #2b4537}
+.hq-kicker{color:#e6c47a;letter-spacing:2px;font-size:9px;font-weight:700}
+.hq-sidebar h2,.hq-panel h2{font-family:Manrope,sans-serif;font-size:23px;line-height:1.25;font-weight:650;margin:12px 0}
+.hq-sidebar p,.hq-range{font-size:12px;color:#b6c8b6;line-height:1.7}
+.hq-progress{height:5px;background:#284333;border-radius:10px;overflow:hidden;margin-top:15px}
+.hq-progress>div{height:100%;width:0;background:#e5c784;transition:width .2s}
+.hq-sublabel{font-size:10px;color:#a4bba7;margin:8px 0 17px}
+#hq-list{display:flex;flex-direction:column;gap:6px;overflow:visible}
+.hq-stop{width:100%;text-align:left;background:#152b21;padding:12px;display:flex;gap:10px;align-items:center;border-color:#2c4435}
+.hq-stop.active,.hq-stop:hover{background:#273e2c;border-color:#e5c784}
+.hq-stop strong{font-size:12px;display:block}.hq-stop small{display:block;font-size:10px;color:#a7bfa7;margin-top:5px;line-height:1.4}
+.hq-number{border:1px solid #57765a;color:#e5c784;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;flex:none;font-size:11px}
+#hq-month-vision{width:100%;margin-top:18px;color:#e5c784;padding:12px;font-size:11px}
+.hq-map-wrap{position:relative;overflow:hidden;min-width:0;background:#224235;touch-action:none}
+#hq-canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.hq-map-hud{position:absolute;top:22px;left:23px;pointer-events:none;text-shadow:0 3px 5px #11221e}
+.hq-map-hud strong{font-size:11px;letter-spacing:2px;display:block;color:#e7d398}
+.hq-map-hud span{font-size:11px;display:block;margin-top:9px;color:#d1ddc7}
+.hq-overview{position:absolute;right:15px;top:18px;font-size:11px;background:#12261be0}
+.hq-map-hint{position:absolute;bottom:0;left:0;right:0;padding:14px 18px;background:#091a14d4;color:#e0d29b;font-size:11px;text-align:center;pointer-events:none}
+.hq-panel label{display:block;margin:18px 0 7px;color:#e5c784;font-size:11px;font-weight:600}
+.hq-panel input[type=text],.hq-panel textarea,.hq-goal-dialog input,.hq-goal-dialog textarea{background:#0c1913;color:#f0f2e8;width:100%;font:13px 'DM Sans',sans-serif;padding:11px;border:1px solid #3c6146;border-radius:7px}
+.hq-panel textarea{min-height:68px}
+.hq-section-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:21px 0 9px;font-size:12px;color:#f4d58d}
+.hq-section-head span{font-size:9px;font-weight:400;color:#97ad9b}
+.hq-task,.hq-goalrow{display:flex;align-items:center;gap:8px;margin:7px 0}
+.hq-task input[type=checkbox],.hq-goalrow input[type=checkbox]{accent-color:#e5c784;width:17px;height:17px;flex:none}
+.hq-task input[type=text]{background:none;border:0;border-bottom:1px solid #385344;border-radius:0;padding:8px 4px;font-size:11px;min-width:0;flex:1}
+.hq-task button,.hq-goalrow>button:last-child{padding:3px 6px;background:none;color:#9dada3;border:0}
+.hq-empty{font-size:10px;color:#8dac9a;font-style:italic}
+.hq-addrow{display:flex;gap:6px;align-items:center}.hq-addrow input{flex:1;min-width:0}.hq-addrow button{color:#edcf82;padding:10px 12px}
+.hq-goallink{min-width:0;flex:1;text-align:left;background:#1c3427;font-size:11px;padding:10px 8px;overflow-wrap:anywhere}
+.hq-minor{width:100%;margin-top:10px;font-size:11px;color:#e6d094;background:#193127}
+.hq-photoarea{border:1px solid #2c4634;background:#0e1e16;border-radius:8px;padding:12px;margin:18px 0;display:grid;gap:11px}
+.hq-photoarea strong{font-size:12px;color:#e5c784}
+#hq-photo{width:100%;max-height:180px;object-fit:contain;background:#08150e;border-radius:5px}
+#hq-photo[hidden]{display:none}
+.hq-photo-actions{display:flex;gap:6px;flex-wrap:wrap}.hq-photo-actions button{font-size:10px;padding:9px}
+.hq-calendar{display:block;text-align:center;border-radius:7px;padding:14px 10px;font-weight:700;font-size:11px;text-decoration:none;background:#e5c784;color:#182d22;margin:14px 0}
+.hq-advance{background:#395844;color:#f2deae;width:100%;margin:11px 0;border:1px solid #72966c;font-weight:700;font-size:12px}
+.hq-done{width:100%;margin:12px 0 6px;background:#304b37;color:#f3d68c;font-weight:700;font-size:11px}
+.hq-picture-dialog{inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:#07130d;border:0;border-radius:0;padding:35px;overflow:hidden}
+.hq-picture-dialog img{width:100%;height:100%;object-fit:contain}
+.hq-picture-dialog button{position:absolute;top:15px;right:20px;z-index:1;background:#10231fdc;color:white}
+.hq-goal-dialog{width:min(92vw,520px);max-width:520px;padding:28px;background:#13251b;border:1px solid #758563;color:white}
+.hq-goal-dialog h2{font-size:24px;margin:4px 0 22px}
+.hq-goal-dialog label{display:block;color:#e5c784;margin:14px 0 8px;font-size:12px}
+.hq-goal-dialog input[type=file]{padding:9px;font-size:11px}
+.hq-goal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}.hq-goal-actions button:last-child{background:#e5c784;color:#15261d}
+#hq-photo-month{font-size:11px}
+@media(max-width:1000px){.hq-layout{grid-template-columns:200px minmax(0,1fr)}.hq-panel{grid-column:1/-1;border-left:0;border-top:1px solid #3d5341;max-height:37vh}.hq-layout{grid-template-rows:minmax(0,1fr) auto}.hq-sidebar{padding:13px}.hq-panel{padding:16px}.hq-header{padding:8px 10px;min-height:62px}}
+@media(max-width:620px){.hq-header{flex-wrap:wrap;gap:6px}.hq-brand{font-size:12px}.hq-brand small{display:none}.hq-header>button{padding:8px 10px}.hq-crumbs{order:4;width:100%;flex-basis:100%;justify-content:flex-start}.hq-crumbs button{font-size:9px;padding:6px}.hq-layout{display:flex;flex-direction:column;overflow:auto}.hq-sidebar{order:2;overflow:visible;flex:none;padding:12px}.hq-sidebar h2{font-size:17px}.hq-sidebar>p,.hq-sidebar>.hq-progress,.hq-sidebar>#hq-progress-label{display:none}#hq-list{display:flex;flex-direction:row;overflow-x:auto;gap:5px}.hq-stop{min-width:135px;width:135px;padding:7px}.hq-stop small{font-size:9px}#hq-month-vision{margin:7px 0}.hq-map-wrap{order:1;height:47vh;min-height:280px;flex:none}.hq-panel{order:3;max-height:none;flex:none;overflow:visible}}
+
+.hq-goal-preview{width:100%;max-height:160px;object-fit:contain;background:#07170f;border-radius:5px;margin-bottom:8px}.hq-goal-preview[hidden]{display:none}.hq-goal-dialog #hq-goal-image-view{background:#243d2c;border-color:#768567;margin-bottom:10px}
+
+/* Week/day Mission Briefing is now an on-demand popup, not a right sidebar. */
+.hq-overlay .hq-layout { grid-template-columns:minmax(195px,250px) minmax(0,1fr); }
+#hq-editor-dialog {width:min(94vw,630px);max-width:630px;max-height:90dvh;
+  margin:auto;padding:0;overflow:hidden;background:#13251b;color:#e9ebdb;
+  border:1px solid #7c8c69;border-radius:12px;}
+#hq-editor-dialog:not([open]){display:none!important}
+#hq-editor-dialog::backdrop{background:#050f0bcc;backdrop-filter:blur(3px)}
+#hq-editor-dialog .hq-panel {width:100%;max-width:none;max-height:calc(90dvh - 58px);
+  overflow:auto!important;padding:18px 23px!important;border:none!important;}
+.hq-editor-top{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:12px 20px;background:#0d1c15;border-bottom:1px solid #385344}
+.hq-editor-top strong{font-size:13px;color:#e5c784}
+#hq-editor-close{font-size:12px;padding:8px 10px}
+#hq-edit-stop {border-color:#7b7446;color:#efd995}
+@media(max-width:1000px){.hq-overlay .hq-layout{grid-template-columns:195px minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr)}}
+@media(max-width:620px){.hq-overlay .hq-layout{display:flex;flex-direction:column}}
+
+.hq-nav-row {display:flex;align-items:stretch;gap:6px;min-width:0}
+.hq-nav-row .hq-stop {flex:1;min-width:0}
+.hq-stop-edit {flex:none;background:#223b2b;border-color:#657859;color:#e5c784;font-size:14px;padding:8px 11px}
+@media(max-width:620px){.hq-nav-row{min-width:175px}.hq-nav-row .hq-stop{min-width:125px;width:auto}}

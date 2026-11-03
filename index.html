@@ -1,0 +1,637 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="theme-color" content="#111e1c">
+
+    <title>Life Quest — Sudeep's Journey</title>
+
+    <link rel="stylesheet" href="style.css?v=20261027_01">
+    <link rel="stylesheet" href="hierarchy.css?v=3">
+</head>
+
+<body>
+
+    <!-- ========== HEADER ========== -->
+
+    <header>
+
+        <a class="brand" href="#">
+            ✧
+            <span>
+                LIFE QUEST
+                <small>A WORLD WORTH BUILDING</small>
+            </span>
+        </a>
+
+        <!-- Roadmap Selection -->
+        <div class="roadmap-switcher" role="tablist" aria-label="Roadmap selector">
+
+            <button id="switch-years" class="switch-btn active"
+                    role="tab" aria-selected="true">
+                <span>⚔️</span> 7-Year Campaign
+            </button>
+
+            <button id="switch-months" class="switch-btn"
+                    role="tab" aria-selected="false">
+                <span>🗓️</span> 12-Month Road
+            </button>
+
+            <select id="year-select" class="year-select"
+                    aria-label="Choose year for monthly road"
+                    style="display: none;">
+
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+                <option value="2031">2031</option>
+                <option value="2032">2032</option>
+
+            </select>
+
+        </div>
+
+        <button id="help" class="quiet">
+            ? <span>How to play</span>
+        </button>
+
+    </header>
+
+
+    <!-- ========== MAIN CONTENT ========== -->
+
+    <main>
+
+        <!-- LEFT SIDEBAR -->
+
+        <aside>
+
+            <div class="eyebrow">YOUR PERSONAL CAMPAIGN</div>
+
+            <h1>
+                Big dreams.<br>
+                One journey.
+            </h1>
+
+            <p class="intro">
+                Every great world starts with a single step.
+                This one is yours.
+            </p>
+
+            <!-- Progress Bar -->
+            <div class="progress-head">
+                <span>REAL-LIFE ACHIEVEMENTS</span>
+                <b id="count">0 / 7</b>
+            </div>
+
+            <div class="progress">
+                <i id="bar"></i>
+            </div>
+
+            <!-- Milestone Navigation -->
+            <nav id="chapters" aria-label="Choose a destination"></nav>
+
+            <div class="aside-foot">
+                <span class="dot"></span>
+                Your pace. Your path.
+
+                <small>Milestones are intentions, not deadlines.</small>
+            </div>
+
+        </aside>
+
+
+        <!-- ========== INTERACTIVE MAP ========== -->
+
+        <section class="game" aria-label="Interactive life map">
+
+            <canvas id="map" tabindex="0"
+                    aria-label="Life quest world. Drag or swipe to navigate the map. Choose destinations in the sidebar to explore.">
+            </canvas>
+
+            <!-- Map Top Controls -->
+            <div class="map-top">
+
+                <div class="region" id="region-tag">
+                    THE EMERALD FRONTIER
+
+                    <small id="location">
+                        CHAPTER 01 · THE BEGINNING
+                    </small>
+                </div>
+
+                <div class="map-buttons">
+
+                    <!-- Day/Night Toggle -->
+                    <button id="theme-toggle" type="button">
+                        🌙 Night
+                    </button>
+
+                    <!-- World View -->
+                    <button id="overview">
+                        ⌖ <span>World view</span>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Compass -->
+            <div class="north">
+                N
+                <span>✧</span>
+            </div>
+
+            <!-- Map Title -->
+            <div class="map-caption">
+
+                <span>EXPLORE YOUR FUTURE</span>
+
+                <h2 id="maptitle">
+                    The journey begins.
+                </h2>
+
+            </div>
+
+            <!-- Map Bottom Controls -->
+            <div class="map-bottom">
+
+                <span>
+                    Drag / swipe to navigate
+                    <em>·</em>
+                    Tap year → month → week → day
+                    <em>·</em>
+                    Photos + Google Calendar
+                </span>
+
+                <!-- Daily Review -->
+                <button id="review-open" type="button">
+                    📔 Daily Review
+                </button>
+
+                <!-- Find Player -->
+                <button id="recenter">
+                    ◎ Find me
+                </button>
+
+            </div>
+
+            <!-- Notification -->
+            <div id="toast" role="status"></div>
+
+        </section>
+
+
+        <!-- ========== MISSION DETAILS ========== -->
+        <!-- Hidden by CSS but needed by JavaScript -->
+
+        <section class="details">
+
+            <div class="detail-top">
+
+                <span class="eyebrow" id="detail-eyebrow">
+                    MISSION BRIEFING
+                </span>
+
+                <span id="chapter-number">01 / 07</span>
+
+            </div>
+
+            <div id="badge">2026</div>
+
+            <span class="eyebrow" id="biome">
+                THE STARTING VILLAGE
+            </span>
+
+            <!-- Editable Milestone Information -->
+            <div class="point-edit-section">
+
+                <div class="edit-field">
+
+                    <div class="edit-label-row">
+                        <label class="eyebrow" for="point-name-input">
+                            MILESTONE NAME
+                        </label>
+
+                        <span class="edit-tag">✎ Map & List</span>
+                    </div>
+
+                    <input id="point-name-input"
+                           class="editable-point-input"
+                           type="text"
+                           placeholder="Milestone Name"
+                           aria-label="Edit milestone name">
+
+                </div>
+
+                <div class="edit-field">
+
+                    <div class="edit-label-row">
+                        <label class="eyebrow" for="point-title-input">
+                            PRIMARY OBJECTIVE
+                        </label>
+
+                        <span class="edit-tag">✎ Goal</span>
+                    </div>
+
+                    <input id="point-title-input"
+                           class="editable-point-input bold-goal"
+                           type="text"
+                           placeholder="Primary Objective"
+                           aria-label="Edit primary objective">
+
+                </div>
+
+            </div>
+
+            <h2 id="goal" style="display: none;"></h2>
+            <p id="description"></p>
+
+
+            <!-- ========== VISION IMAGE ========== -->
+
+            <div class="vision-section">
+
+                <div class="vision-top">
+
+                    <span class="eyebrow">
+                        MILESTONE VISION IMAGE
+                    </span>
+
+                    <span id="img-status-tag" class="img-tag">
+                        No image
+                    </span>
+
+                </div>
+
+                <!-- Image Preview -->
+                <div id="img-preview-box"
+                     class="img-preview-box"
+                     style="display: none;">
+
+                    <img id="point-img-element"
+                         src=""
+                         alt="Milestone Vision">
+
+                    <div class="img-preview-overlay">
+
+                        <button id="view-full-img-btn"
+                                class="img-overlay-btn"
+                                type="button"
+                                title="View full image">
+                            🔍 View
+                        </button>
+
+                        <button id="remove-img-btn"
+                                class="img-overlay-btn danger"
+                                type="button"
+                                title="Remove image">
+                            ✕ Remove
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Upload Image -->
+                <div class="img-action-buttons">
+
+                    <label class="img-btn file-btn" tabindex="0">
+
+                        <span>📁 Upload Image</span>
+
+                        <input type="file"
+                               id="image-file-input"
+                               accept="image/*"
+                               style="display: none;">
+
+                    </label>
+
+                    <button id="toggle-url-btn"
+                            class="img-btn"
+                            type="button">
+                        🔗 Enter URL
+                    </button>
+
+                </div>
+
+                <!-- Image URL Input -->
+                <div id="url-drawer"
+                     class="url-drawer"
+                     style="display: none;">
+
+                    <input id="img-url-input"
+                           class="url-input"
+                           type="url"
+                           placeholder="Paste image link (https://...)">
+
+                    <div class="url-drawer-actions">
+
+                        <button id="save-url-btn"
+                                class="action-btn-sm primary-sm"
+                                type="button">
+                            Apply
+                        </button>
+
+                        <button id="cancel-url-btn"
+                                class="action-btn-sm"
+                                type="button">
+                            Cancel
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- GOOGLE CALENDAR LINK -->
+
+            <a id="cal-link"
+               class="cal-btn"
+               target="_blank"
+               rel="noopener noreferrer"
+               style="display: none;">
+
+                <span>📅</span>
+
+                <b id="cal-link-text">
+                    Open in Google Calendar ↗
+                </b>
+
+            </a>
+
+            <div class="divider"></div>
+
+
+            <!-- PERSONAL QUESTS -->
+
+            <div class="quest-heading">
+
+                <span id="quest-label">
+                    YOUR NEXT STEPS
+                </span>
+
+                <span>EDITABLE QUESTS</span>
+
+            </div>
+
+            <div id="tasks"></div>
+
+            <button id="add" class="add">
+                ＋ Add a personal quest
+            </button>
+
+
+            <!-- NOTES -->
+
+            <label class="notes-label" for="notes">
+                FIELD NOTES
+            </label>
+
+            <textarea id="notes"
+                      placeholder="What does this dream look like to you?"></textarea>
+
+
+            <!-- COMPLETE MILESTONE -->
+
+            <button id="complete" class="primary">
+                ⚑ Mark milestone achieved
+            </button>
+
+            <p class="save-note" id="save-note">
+                Progress saves in this browser.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- ========== IMAGE PREVIEW POPUP ========== -->
+
+    <dialog id="image-modal" class="image-modal">
+
+        <button id="close-image-modal"
+                class="close"
+                aria-label="Close image">
+            ×
+        </button>
+
+        <img id="modal-img-display"
+             src=""
+             alt="Milestone vision preview">
+
+    </dialog>
+
+
+    <!-- ========== HELP POPUP ========== -->
+
+    <dialog id="help-dialog">
+
+        <button id="close-help"
+                class="close"
+                aria-label="Close instructions">
+            ×
+        </button>
+
+        <div class="eyebrow">WELCOME, EXPLORER</div>
+
+        <h2>Two Connected Roadmaps</h2>
+
+        <p>
+            <strong>⚔️ 7-Year Campaign (2026–2032)</strong>:
+            Your grand life milestones climbing all the way to
+            Freedom Summit, with
+            <strong>12 seasonal months (Jan–Dec) alongside
+            the road between every year</strong> that open directly
+            into Google Calendar when clicked!
+        </p>
+
+        <p>
+            <strong>🗓️ 12-Month Road (Jan–Dec)</strong>:
+            An interactive annual roadmap climbing through all
+            12 months with 4 week stepping stones (W1–W4)
+            along the road so you can hop week by week!
+        </p>
+
+        <p>
+            Drag or swipe anywhere on the map to navigate freely.
+            Click any landmark, roadside month pill, or week stone
+            to hop your avatar there. Real-time "NOW" beacons
+            indicate where you are in real life. Attach vision
+            images and edit milestone names in the briefing panel.
+        </p>
+
+        <p>
+            Progress, vision images, and custom quests
+            save in your browser.
+        </p>
+
+        <button id="start" class="primary">
+            Let's explore →
+        </button>
+
+    </dialog>
+
+
+    <!-- ========== DAILY REVIEW JOURNAL ========== -->
+
+    <dialog id="daily-review-dialog"
+            aria-labelledby="review-heading">
+
+        <button id="review-close"
+                class="close"
+                type="button"
+                aria-label="Close journal">
+            ×
+        </button>
+
+        <div class="eyebrow">MY PERSONAL JOURNAL</div>
+
+        <h2 id="review-heading">Daily Review</h2>
+
+
+        <!-- Select Review Date -->
+        <div class="review-date-row">
+
+            <button id="review-prev" type="button">
+                ←
+            </button>
+
+            <input type="date"
+                   id="review-date"
+                   aria-label="Select review date">
+
+            <button id="review-next" type="button">
+                →
+            </button>
+
+        </div>
+
+
+        <!-- Daily Achievements -->
+        <label class="review-label" for="review-wins">
+            What did I achieve today?
+        </label>
+
+        <textarea id="review-wins"
+                  placeholder="Write about your achievements..."></textarea>
+
+
+        <!-- Mistakes and Difficulties -->
+        <label class="review-label" for="review-challenges">
+            What mistakes or difficulties did I face?
+        </label>
+
+        <textarea id="review-challenges"
+                  placeholder="What didn't go as planned?"></textarea>
+
+
+        <!-- Lessons Learned -->
+        <label class="review-label" for="review-lessons">
+            What did I learn today?
+        </label>
+
+        <textarea id="review-lessons"
+                  placeholder="New knowledge or lessons..."></textarea>
+
+
+        <!-- Tomorrow's Improvements -->
+        <label class="review-label" for="review-tomorrow">
+            What will I improve tomorrow?
+        </label>
+
+        <textarea id="review-tomorrow"
+                  placeholder="My next step..."></textarea>
+
+
+        <!-- Auto Save Status -->
+        <p id="review-status" role="status">
+            Changes save automatically.
+        </p>
+
+    </dialog>
+
+
+    <!-- ========== JAVASCRIPT ========== -->
+    
+<!-- FULL SCREEN DREAM MODE -->
+<dialog id="dream-dialog" class="dream-dialog"
+        aria-labelledby="dream-title">
+
+    <div class="dream-stage">
+
+        <!-- Dream background image -->
+        <img id="dream-photo" class="dream-photo"
+             alt="My dream life scene" hidden>
+
+        <div id="dream-empty" class="dream-empty">
+            <strong>✦ Picture your future ✦</strong>
+            <p>Add a picture of the life you want to experience.</p>
+        </div>
+
+        <!-- Top controls -->
+        <div class="dream-top">
+            <span id="dream-year"></span>
+
+            <button id="dream-close" type="button">
+                ✕ Close
+            </button>
+        </div>
+
+        <!-- Dream title and description -->
+        <div class="dream-bottom">
+
+            <span class="dream-label">MY FUTURE LIFE</span>
+
+            <h2 id="dream-title"></h2>
+            <p id="dream-caption"></p>
+
+            <div class="dream-controls">
+
+                <button id="dream-prev" type="button">
+                    ← Previous
+                </button>
+
+                <button id="dream-add-photo" type="button">
+                    📷 Add / change photo
+                </button>
+
+                <input id="dream-file" type="file"
+                       accept="image/*" hidden>
+
+                <button id="dream-next" type="button">
+                    Next →
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+</dialog>
+
+
+
+    <script src="app.js?v=20261024_04"></script>
+    <script src="custom-milestones.js?v=3"></script>
+    <script src="month-visions.js?v=1"></script>
+    <script src="hierarchy.js?v=3"></script>
+    <script src="viewer-layout.js?v=1"></script>
+    <!-- Optional private cloud connection: configure cloud-config.js + SQL first -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="cloud-config.js"></script>
+    <script src="cloud-sync.js?v=1"></script>
+
+</body>
+</html>
