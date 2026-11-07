@@ -31,35 +31,14 @@
             </span>
         </a>
 
-        <!-- Roadmap Selection -->
-        <div class="roadmap-switcher" role="tablist" aria-label="Roadmap selector">
-
-            <button id="switch-years" class="switch-btn active"
-                    role="tab" aria-selected="true">
-                <span>⚔️</span> 7-Year Campaign
-            </button>
-
-            <button id="switch-months" class="switch-btn"
-                    role="tab" aria-selected="false">
-                <span>🗓️</span> 12-Month Road
-            </button>
-
-            <select id="year-select" class="year-select"
-                    aria-label="Choose year for monthly road"
-                    style="display: none;">
-
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
-                <option value="2030">2030</option>
-                <option value="2031">2031</option>
-                <option value="2032">2032</option>
-
-            </select>
-
+        <!-- Unified year and month roadmap -->
+        <div class="roadmap-switcher" role="tablist" aria-label="Roadmap">
+            <button id="switch-years" class="switch-btn active" role="tab" aria-selected="true">My Roadmap</button>
+            <button id="switch-months" class="switch-btn" role="tab" aria-selected="false" hidden>Months</button>
+            <select id="year-select" class="year-select" aria-label="Choose roadmap year" style="display:none" hidden></select>
         </div>
 
+        <button id="add-year" type="button">+ Add year</button>
         <button id="help" class="quiet">
             ? <span>How to play</span>
         </button>
@@ -90,15 +69,21 @@
             <!-- Progress Bar -->
             <div class="progress-head">
                 <span>REAL-LIFE ACHIEVEMENTS</span>
-                <b id="count">0 / 7</b>
+                <b id="count">0 / 0</b>
             </div>
 
             <div class="progress">
                 <i id="bar"></i>
             </div>
 
-            <!-- Milestone Navigation -->
+            <!-- Year navigation and controls for extending both ends -->
+            <div class="roadmap-edge-control" id="roadmap-before-wrap" hidden>
+                <button id="add-earlier-year" type="button">+ Add an earlier year</button>
+            </div>
             <nav id="chapters" aria-label="Choose a destination"></nav>
+            <div class="roadmap-edge-control" id="roadmap-after-wrap" hidden>
+                <button id="add-later-year" type="button">+ Add a later year</button>
+            </div>
 
             <div class="aside-foot">
                 <span class="dot"></span>
@@ -121,13 +106,7 @@
             <!-- Map Top Controls -->
             <div class="map-top">
 
-                <div class="region" id="region-tag">
-                    THE EMERALD FRONTIER
-
-                    <small id="location">
-                        CHAPTER 01 · THE BEGINNING
-                    </small>
-                </div>
+                <div class="region" id="region-tag">MY ROADMAP<small id="location">ADD A YEAR TO BEGIN</small></div>
 
                 <div class="map-buttons">
 
@@ -157,7 +136,7 @@
                 <span>EXPLORE YOUR FUTURE</span>
 
                 <h2 id="maptitle">
-                    The journey begins.
+                    Your roadmap
                 </h2>
 
             </div>
@@ -202,11 +181,13 @@
                     MISSION BRIEFING
                 </span>
 
-                <span id="chapter-number">01 / 07</span>
+                <span id="chapter-number">NO YEARS</span>
 
             </div>
 
-            <div id="badge">2026</div>
+
+
+            <div id="badge">—</div>
 
             <span class="eyebrow" id="biome">
                 THE STARTING VILLAGE
@@ -282,6 +263,17 @@
                          src=""
                          alt="Milestone Vision">
 
+
+                         <div id="point-gallery-nav" class="point-gallery-nav" hidden>
+                            <button id="point-photo-prev" type="button"
+                                    aria-label="Previous milestone photo">‹</button>
+
+                            <span id="point-photo-count">1 / 1</span>
+
+                            <button id="point-photo-next" type="button"
+                                    aria-label="Next milestone photo">›</button>
+                        </div>
+
                     <div class="img-preview-overlay">
 
                         <button id="view-full-img-btn"
@@ -307,12 +299,13 @@
 
                     <label class="img-btn file-btn" tabindex="0">
 
-                        <span>📁 Upload Image</span>
+                      <span>📁 Upload Photos (up to 10)</span>
 
-                        <input type="file"
-                               id="image-file-input"
-                               accept="image/*"
-                               style="display: none;">
+                                        <input type="file"
+                        id="image-file-input"
+                        accept="image/*"
+                        multiple
+                        style="display: none;">
 
                     </label>
 
@@ -409,6 +402,8 @@
                 ⚑ Mark milestone achieved
             </button>
 
+
+
             <p class="save-note" id="save-note">
                 Progress saves in this browser.
             </p>
@@ -447,37 +442,12 @@
 
         <div class="eyebrow">WELCOME, EXPLORER</div>
 
-        <h2>Two Connected Roadmaps</h2>
+        <h2>Build your roadmap</h2>
 
-        <p>
-            <strong>⚔️ 7-Year Campaign (2026–2032)</strong>:
-            Your grand life milestones climbing all the way to
-            Freedom Summit, with
-            <strong>12 seasonal months (Jan–Dec) alongside
-            the road between every year</strong> that open directly
-            into Google Calendar when clicked!
-        </p>
-
-        <p>
-            <strong>🗓️ 12-Month Road (Jan–Dec)</strong>:
-            An interactive annual roadmap climbing through all
-            12 months with 4 week stepping stones (W1–W4)
-            along the road so you can hop week by week!
-        </p>
-
-        <p>
-            Drag or swipe anywhere on the map to navigate freely.
-            Click any landmark, roadside month pill, or week stone
-            to hop your avatar there. Real-time "NOW" beacons
-            indicate where you are in real life. Attach vision
-            images and edit milestone names in the briefing panel.
-        </p>
-
-        <p>
-            Progress, vision images, and custom quests
-            save in your browser.
-        </p>
-
+        <p>Add a year to create 12 blank month stops on the same map.</p>
+        <p>Use the buttons above and below the year list to extend either end. You can also enter a year between existing years.</p>
+        <p>Select a month to plan its weeks and days. Add your own objectives, quests, notes, and pictures at every level.</p>
+        <p>Drag or swipe the map to explore. Select a year or month marker to open it. Your roadmap saves in this browser.</p>
         <button id="start" class="primary">
             Let's explore →
         </button>
@@ -605,16 +575,26 @@
                 </button>
 
                 <button id="dream-add-photo" type="button">
-                    📷 Add / change photo
+                    📷 Add photos
                 </button>
 
                 <input id="dream-file" type="file"
-                       accept="image/*" hidden>
+                       accept="image/*" multiple hidden>
 
                 <button id="dream-next" type="button">
                     Next →
                 </button>
 
+            </div>
+
+            <div id="dream-photo-nav" class="dream-photo-nav" hidden>
+                <button id="dream-photo-prev" type="button"
+                        aria-label="Previous photo">‹</button>
+
+                <span id="dream-photo-count">1 / 1</span>
+
+                <button id="dream-photo-next" type="button"
+                        aria-label="Next photo">›</button>
             </div>
         </div>
 
@@ -622,12 +602,12 @@
 </dialog>
 
 
-
-    <script src="app.js?v=20261024_04"></script>
-    <script src="custom-milestones.js?v=3"></script>
-    <script src="month-visions.js?v=1"></script>
-    <script src="hierarchy.js?v=3"></script>
-    <script src="viewer-layout.js?v=1"></script>
+    <script src="milestone-model.js?v=1"></script>
+    <script src="app.js?v=20261107_12"></script>
+    <script src="roadmap-manager.js?v=5"></script>
+    <script src="month-visions.js?v=2"></script>
+    <script src="hierarchy.js?v=8"></script>
+    <script src="viewer-layout.js?v=2"></script>
     <!-- Optional private cloud connection: configure cloud-config.js + SQL first -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="cloud-config.js"></script>
@@ -635,3 +615,4 @@
 
 </body>
 </html>
+

@@ -40,12 +40,20 @@
     .extra-vision-img[hidden]{display:none}
     .extra-vision-shade{position:absolute;inset:0;background:linear-gradient(#0008,transparent 35%,#000d)}
     .extra-vision-top,.extra-vision-bottom{position:relative;z-index:1;padding:clamp(18px,4vw,45px)}
-    .extra-vision-top{display:flex;justify-content:space-between;align-items:center}
+    .extra-vision-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .extra-vision-top-actions{display:flex;align-items:center;gap:8px}
+    .extra-vision-top-actions button{padding:8px 11px;background:#0b221bd9;border-color:#ab935e;color:#fff;font-size:12px}
+    .extra-vision-top-actions #extra-delete{border-color:#b76c61;color:#ffe0d8}
     .extra-vision-bottom{max-width:920px}
     .extra-vision-bottom h2{font-size:clamp(30px,6vw,68px);margin:8px 0}
     .extra-vision-bottom p{font-size:clamp(14px,2vw,20px);color:#eee;white-space:pre-wrap}
     .extra-vision .extra-actions{max-width:550px}
     .extra-vision .extra-actions button{background:#0b221bd9;border-color:#ab935e}
+    .extra-photo-nav{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:14px}
+    .extra-photo-nav[hidden]{display:none}
+    .extra-photo-nav button{width:42px;height:42px;border-radius:50%;border:1px solid #ab935e;
+      background:#0b221bd9;color:#fff;font-size:22px;line-height:1;cursor:pointer}
+    .extra-photo-nav span{font:600 12px 'DM Sans',sans-serif;color:#e5c784;min-width:56px;text-align:center}
   `;
   document.head.appendChild(style);
 
@@ -84,8 +92,8 @@
       <input id="extra-name" placeholder="e.g. Buy my first Lamborghini" maxlength="90" required>
       <label for="extra-description">Imagine your future (description)</label>
       <textarea id="extra-description" placeholder="Describe yourself living this dream..."></textarea>
-      <label for="extra-photo">Vision photo (optional)</label>
-      <input id="extra-photo" type="file" accept="image/*">
+      <label for="extra-photo">Vision pictures (optional, up to 10)</label>
+      <input id="extra-photo" type="file" accept="image/*" multiple>
       <div class="extra-actions">
         <button type="button" id="extra-cancel">Cancel</button>
         <button type="submit">Save milestone</button>
@@ -106,22 +114,40 @@
       <img class="extra-vision-img" alt="Vision of my future" hidden>
       <div class="extra-vision-shade"></div>
       <div class="extra-vision-top"><strong id="extra-view-year"></strong>
-        <button type="button" id="extra-view-close">✕ Close</button></div>
+        <div class="extra-vision-top-actions">
+          <button type="button" id="extra-delete">Delete milestone</button>
+          <button type="button" id="extra-view-close">✕ Close</button>
+        </div>
+      </div>
       <div class="extra-vision-bottom"><span style="color:#e5c784;letter-spacing:3px">MY FUTURE LIFE</span>
         <h2 id="extra-view-title"></h2><p id="extra-view-desc"></p>
         <div class="extra-actions">
           <button type="button" id="extra-achieved">⚑ Mark achieved</button>
           <button type="button" id="extra-edit">✎ Edit</button>
-          <button type="button" id="extra-remove-photo">🗑 Delete photo</button>
-          <button type="button" id="extra-delete">Delete milestone</button>
+          <button type="button" id="extra-add-photos">📷 Add photos</button>
+          <button type="button" id="extra-remove-photo">🗑 Delete this photo</button>
+          <input id="extra-add-file" type="file" accept="image/*" multiple hidden>
+        </div>
+        <div class="extra-photo-nav" id="extra-photo-nav" hidden>
+          <button type="button" id="extra-photo-prev" aria-label="Previous photo">‹</button>
+          <span id="extra-photo-count">1 / 1</span>
+          <button type="button" id="extra-photo-next" aria-label="Next photo">›</button>
         </div>
       </div>
     </div>`;
   document.body.appendChild(viewer);
   const visionImg = viewer.querySelector('.extra-vision-img');
-  let photoURL = null;
+  let photoGallery = [];
+  let photoIndex = 0;
+  let viewerToken = 0;
   let editingID = null;
   let viewingID = null;
+
+  function releaseViewerGallery() {
+    lqReleaseGallery(photoGallery);
+    photoGallery = [];
+    photoIndex = 0;
+  }
 
   // Store pictures separately from text so large images don't fill localStorage.
   function photoStore(mode, id, blob) {
@@ -194,10 +220,28 @@
                    hasPhoto: Boolean(oldItem && oldItem.hasPhoto) };
     if (!item.name) return;
     try {
-      if (photoField.files[0]) {
-        const blob = await imageAsJpeg(photoField.files[0]);
-        await photoStore('put', id, blob);
-        item.hasPhoto = true;
+      const files = Array.from(photoField.files || []);
+      if (files.length) {
+        const valid = files.filter(file => file && file.type && file.type.startsWith('image/'));
+        if (!valid.length) throw new Error('Choose an image file.');
+        const prefix = `gallery:${id}:`;
+        const extras = await lqPhotoOp('lifequest-custom-photos', 'photos', 'list', prefix);
+        const occupied = (oldItem && oldItem.hasPhoto ? 1 : 0) + extras.length;
+
+        if (!occupied) {
+          // First photo keeps using the original single-photo key.
+          await photoStore('put', id, await imageAsJpeg(valid[0]));
+          item.hasPhoto = true;
+          const rest = valid.slice(1);
+          if (rest.length) {
+            await lqAddGalleryFiles('lifequest-custom-photos', 'photos', prefix, rest, 1);
+          }
+        } else {
+          const result = await lqAddGalleryFiles(
+            'lifequest-custom-photos', 'photos', prefix, valid, occupied
+          );
+          if (result.added) item.hasPhoto = true;
+        }
       }
       const next = editingID ? items.map(m => m.id === id ? item : m) : [...items, item];
       saveText(next);
@@ -290,6 +334,58 @@
     syncNavigation();
   }
 
+  function renderViewerGallery() {
+    const entry = photoGallery[photoIndex];
+    const nav = viewer.querySelector('#extra-photo-nav');
+    const count = viewer.querySelector('#extra-photo-count');
+    const previous = viewer.querySelector('#extra-photo-prev');
+    const next = viewer.querySelector('#extra-photo-next');
+
+    if (!entry) {
+      visionImg.hidden = true;
+      visionImg.removeAttribute('src');
+      if (nav) nav.hidden = true;
+      return;
+    }
+
+    visionImg.src = entry.src;
+    visionImg.hidden = false;
+
+    if (nav) nav.hidden = false;
+    if (count) count.textContent = `${photoIndex + 1} / ${photoGallery.length}`;
+    if (previous) previous.hidden = photoGallery.length < 2;
+    if (next) next.hidden = photoGallery.length < 2;
+  }
+
+  async function loadViewerGallery(id, preferredIndex = 0) {
+    const token = ++viewerToken;
+    releaseViewerGallery();
+    visionImg.hidden = true;
+    visionImg.removeAttribute('src');
+
+    const entries = [];
+
+    try {
+      const blob = await photoStore('get', id);
+      if (blob) entries.push({ key: id, src: URL.createObjectURL(blob), primary: true });
+      entries.push(...await lqGalleryExtras(
+        'lifequest-custom-photos', 'photos', `gallery:${id}:`
+      ));
+    } catch (err) { console.warn('Milestone photo unavailable', err); }
+
+    if (token !== viewerToken || viewingID !== id || !viewer.open) {
+      lqReleaseGallery(entries);
+      return;
+    }
+
+    photoGallery = entries;
+    photoIndex = entries.length
+      ? Math.max(0, Math.min(preferredIndex, entries.length - 1))
+      : 0;
+
+    renderViewerGallery();
+  }
+
   async function openViewer(id) {
     const item = items.find(i => i.id === id);
     if (!item) return;
@@ -302,32 +398,52 @@
     activeCustomID = id;
     navigateToCustom(item);
     renderItems();
-    if (photoURL) URL.revokeObjectURL(photoURL);
-    photoURL = null;
-    visionImg.hidden = true;
-    visionImg.removeAttribute('src');
     if (!viewer.open) viewer.showModal();
-    try {
-      const blob = await photoStore('get', id);
-      if (viewingID !== id || !viewer.open || !blob) return;
-      photoURL = URL.createObjectURL(blob);
-      visionImg.src = photoURL;
-      visionImg.hidden = false;
-    } catch (err) { console.warn('Milestone photo unavailable', err); }
+    await loadViewerGallery(id, 0);
   }
 
   function closeViewer() {
     viewer.close();
-    if (photoURL) URL.revokeObjectURL(photoURL);
-    photoURL = null;
+    releaseViewerGallery();
     viewingID = null;
     visionImg.removeAttribute('src');
   }
   viewer.querySelector('#extra-view-close').addEventListener('click', closeViewer);
   viewer.addEventListener('close', () => {
-    if (photoURL) URL.revokeObjectURL(photoURL);
-    photoURL = null;
+    releaseViewerGallery();
     viewingID = null;
+  });
+  viewer.querySelector('#extra-photo-prev').addEventListener('click', () => {
+    if (photoGallery.length < 2) return;
+    photoIndex = (photoIndex - 1 + photoGallery.length) % photoGallery.length;
+    renderViewerGallery();
+  });
+  viewer.querySelector('#extra-photo-next').addEventListener('click', () => {
+    if (photoGallery.length < 2) return;
+    photoIndex = (photoIndex + 1) % photoGallery.length;
+    renderViewerGallery();
+  });
+  viewer.querySelector('#extra-add-photos').addEventListener('click', () => {
+    viewer.querySelector('#extra-add-file').click();
+  });
+  viewer.querySelector('#extra-add-file').addEventListener('change', async event => {
+    const files = Array.from(event.target.files || []);
+    event.target.value = '';
+    const id = viewingID;
+    if (!files.length || !id) return;
+
+    const occupied = photoGallery.length;
+
+    try {
+      const result = await lqAddGalleryFiles(
+        'lifequest-custom-photos', 'photos', `gallery:${id}:`, files, occupied
+      );
+
+      if (result.added) {
+        saveText(items.map(m => m.id === id ? { ...m, hasPhoto: true } : m));
+        await loadViewerGallery(id, occupied);
+      }
+    } catch (err) { alert('Could not add photos: ' + err.message); }
   });
   viewer.querySelector('#extra-achieved').addEventListener('click', () => {
     const item = items.find(i => i.id === viewingID);
@@ -340,11 +456,17 @@
   viewer.querySelector('#extra-remove-photo').addEventListener('click', async () => {
     const id = viewingID;
     const item = items.find(m => m.id === id);
-    if (!item || !confirm('Delete this dream photo? (Milestone will remain.)')) return;
+    const entry = photoGallery[photoIndex];
+    if (!item || !entry || !confirm('Delete this photo? (Milestone will remain.)')) return;
+
+    const oldIndex = photoIndex;
+
     try {
-      await photoStore('delete', id);
-      saveText(items.map(m => m.id === id ? {...m, hasPhoto: false} : m));
-      await openViewer(id);
+      if (entry.key) await photoStore('delete', entry.key);
+      await loadViewerGallery(id, Math.max(0, oldIndex - 1));
+      saveText(items.map(m =>
+        m.id === id ? { ...m, hasPhoto: photoGallery.length > 0 } : m
+      ));
     } catch(err) { alert('Could not delete photo: ' + err.message); }
   });
   viewer.querySelector('#extra-edit').addEventListener('click', () => {
@@ -356,8 +478,12 @@
     if (!confirm('Delete this dream milestone?')) return;
     const id = viewingID;
     try {
+      const extras = await lqPhotoOp(
+        'lifequest-custom-photos', 'photos', 'list', `gallery:${id}:`
+      );
       saveText(items.filter(i => i.id !== id));
       await photoStore('delete', id);
+      for (const entry of extras) await photoStore('delete', entry.key);
       closeViewer();
     } catch (err) { alert('Could not delete milestone: ' + err.message); }
   });
