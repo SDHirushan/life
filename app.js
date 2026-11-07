@@ -1,59 +1,62 @@
 'use strict';
-const chapters = [
-  { year: 2026, name: 'The beginning', place: 'The starting village', title: 'The journey begins.', desc: 'Every future version of you starts here. Build your foundation, choose your direction, and take the first small step.', tasks: ['Define the life I want to build', 'Choose my first 90-day goal', 'Make a weekly learning routine'], x: 480, y: 2440, type: 'camp' },
-  { year: 2027, name: 'Career city', place: 'Company headquarters', title: 'A place in the industry.', desc: 'Walk into a company as a professional. Build useful software, learn from your team, and become someone people can count on.', tasks: ['Build a portfolio I can explain', 'Practise interviews and English', 'Earn my first company role'], x: 720, y: 2080, type: 'office' },
-  { year: 2028, name: 'Skills academy', place: 'Academy of mastery', title: 'Turn practice into mastery.', desc: 'Develop the core skills that support my career. Keep learning, build real projects, and prove what I can do.', tasks: ['Define my core technical skills', 'Finish a challenging real project', 'Explain and teach what I learned'], x: 370, y: 1720, type: 'academy' },
-  { year: 2029, name: 'Network citadel', place: 'Networking command centre', title: 'Reach the next level.', desc: 'Rise to an advanced level in networking through hands-on labs, troubleshooting, and real-world experience.', tasks: ['Build an advanced networking lab', 'Solve and document network faults', 'Demonstrate my networking expertise'], x: 690, y: 1360, type: 'tower' },
-  { year: 2030, name: 'Dream garage', place: 'The reward along the road', title: 'The keys to my dream.', desc: 'Own the vehicle I have imagined. Choose the exact model and make a realistic plan for buying and maintaining it.', tasks: ['Choose my dream vehicle', 'Set my purchase and running budget', 'Reach my vehicle savings target'], x: 340, y: 1000, type: 'garage' },
-  { year: 2031, name: 'Family palace', place: 'A home for mum and dad', title: 'Give them a beautiful life.', desc: 'Mum and Dad living in a mansion: a home that feels peaceful, comfortable, and full of the life we have built together.', tasks: ['Define our ideal family home', 'Create a realistic home funding plan', 'Move Mum and Dad into their home'], x: 670, y: 640, type: 'palace' },
-  { year: 2032, name: 'Freedom summit', place: 'The debt-free summit', title: 'A future that feels free.', desc: 'All debts paid. Celebrate the freedom to make choices, care for the people I love, and start the next adventure.', tasks: ['List balances and repayment goals', 'Track steady repayment progress', 'Confirm every debt is paid'], x: 490, y: 260, type: 'summit' }
-];
-
-const monthChapters = [
-  { mIndex: 0, name: 'January', place: 'The Dawn Outpost', title: 'New Dawn & Foundations', desc: 'Set your vision for the year, establish your daily foundation, and build early momentum.', tasks: ['Define primary focus for the year', 'Establish morning routine', 'Set 30-day starter sprint'], x: 480, y: 3100, type: 'camp' },
-  { mIndex: 1, name: 'February', place: 'The Focus Forge', title: 'Habit & Consistency', desc: 'Turn initial motivation into disciplined consistency. Lock in your workflow and push through friction.', tasks: ['Maintain daily habit streak', 'Complete first project milestone', 'Conduct mid-quarter check-in'], x: 700, y: 2840, type: 'office' },
-  { mIndex: 2, name: 'March', place: 'The Spring Outpost', title: 'Quarter 1 Review & Push', desc: 'Finish Q1 strong. Evaluate what worked, adjust your tactics, and lock in your first major win.', tasks: ['Review Q1 goals and deliverables', 'Ship first quarter milestone', 'Plan Q2 strategic focus'], x: 350, y: 2580, type: 'academy' },
-  { mIndex: 3, name: 'April', place: 'The Growth Citadel', title: 'Expansion & Knowledge', desc: 'Spring into accelerated learning. Deepen your technical craft and take on more ambitious challenges.', tasks: ['Start new technical skill track', 'Build an end-to-end prototype', 'Audit system performance'], x: 680, y: 2320, type: 'tower' },
-  { mIndex: 4, name: 'May', place: 'The Builder’s Yard', title: 'Deep Work & Craftsmanship', desc: 'Get into flow state. Refine your tools, build robust solutions, and create tangible proof of your abilities.', tasks: ['Refactor core project components', 'Document learnings and architecture', 'Prepare mid-year portfolio update'], x: 340, y: 2060, type: 'garage' },
-  { mIndex: 5, name: 'June', place: 'The Mid-Year Sanctuary', title: 'Halfway Reflection & Calibration', desc: 'Celebrate the first six months. Take stock of how far you’ve journeyed and set sights on the second half.', tasks: ['Conduct 6-month retrospective', 'Celebrate wins achieved so far', 'Recalibrate remaining objectives'], x: 670, y: 1800, type: 'palace' },
-  { mIndex: 6, name: 'July', place: 'The High Oasis', title: 'Renewed Energy & Ambition', desc: 'Kick off Q3 with high energy. Tackle the hardest challenge on your roadmap while enthusiasm is high.', tasks: ['Initiate major Q3 project sprint', 'Experiment with new techniques', 'Engage with industry community'], x: 360, y: 1540, type: 'camp' },
-  { mIndex: 7, name: 'August', place: 'The Endurance Hub', title: 'Tenacity & Execution', desc: 'Stay the course during late summer. Steadfast effort produces extraordinary breakthroughs.', tasks: ['Push through project roadblocks', 'Maintain physical energy and health', 'Test and validate recent work'], x: 690, y: 1280, type: 'office' },
-  { mIndex: 8, name: 'September', place: 'The Master’s Academy', title: 'Skills Polish & Demonstration', desc: 'Wrap up Q3 deliverables. Refine your portfolio, showcase results, and demonstrate your level of mastery.', tasks: ['Finalize Q3 milestone deliverables', 'Share knowledge with peers', 'Outline Q4 final push'], x: 350, y: 1020, type: 'academy' },
-  { mIndex: 9, name: 'October', place: 'The Autumn Citadel', title: 'Final Sprint Launch', desc: 'Enter the final quarter with sharp focus. Prioritize the highest-impact goals to conclude the year.', tasks: ['Identify must-win goals for Q4', 'Eliminate non-essential distractions', 'Accelerate critical milestones'], x: 680, y: 760, type: 'tower' },
-  { mIndex: 10, name: 'November', place: 'The Highland Manor', title: 'Closing the Gaps', desc: 'Tie up loose ends and finish major projects before the holiday season. Leave nothing to chance.', tasks: ['Complete final project submissions', 'Review financial and savings targets', 'Prepare year-end transition'], x: 360, y: 500, type: 'palace' },
-  { mIndex: 11, name: 'December', place: 'The Victory Summit', title: 'Celebration & New Horizons', desc: 'Reach the peak of the year. Reflect on 12 months of relentless growth, celebrate, and prepare for next year.', tasks: ['Complete annual review and journal', 'Celebrate all milestone triumphs', 'Set intentions for the upcoming year'], x: 500, y: 240, type: 'summit' }
-];
+const ROADMAP_STORAGE = 'lifequest-user-roadmap-v1';
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTH_FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+let storedRoadmap = { years: [] };
+try {
+  const value = JSON.parse(localStorage.getItem(ROADMAP_STORAGE) || '{}');
+  if (Array.isArray(value.years)) storedRoadmap = value;
+} catch {}
+const storedYears = storedRoadmap.years
+  .filter(record => record && record.chapter && record.data)
+  .sort((a, b) => Number(a.chapter.year) - Number(b.chapter.year));
+const chapters = storedYears.map(record => ({ ...record.chapter }));
+const monthChapters = MONTH_FULL.map((name, mIndex) => ({
+  mIndex, name, place: name, title: '', desc: '', tasks: [],
+  x: 480 + Math.sin(mIndex * 1.35) * 300, y: 3100 - mIndex * 260, type: 'camp'
+}));
 
 const $ = id => document.getElementById(id);
 
 // State management
 let currentMode = 'years'; // 'years' | 'months'
-let selectedYear = 2026;
+let selectedYear = chapters[0]?.year || new Date().getFullYear();
 let selectedYearIdx = 0;
 let selectedMonthIdx = 0;
 let selectedWeekNode = null; // null or { mIndex, weekNum }
+let selectedRoadmapMonth = false;
 
-let savedYears = {};
-try { savedYears = JSON.parse(localStorage.getItem('lifequest-v1') || '{}'); } catch {}
-let yearData = chapters.map((c, i) => ({
-  tasks: c.tasks.map(t => ({ text: t, done: false })),
-  notes: '',
-  done: false,
-  ...savedYears[i]
+function isYearTarget() {
+  return currentMode === 'years' && !selectedRoadmapMonth;
+}
+
+let yearData = storedYears.map(record => ({
+  tasks: [], notes: '', done: false, ...record.data
 }));
 
+function persistYearRoadmap() {
+  try {
+    localStorage.setItem(ROADMAP_STORAGE, JSON.stringify({
+      years: chapters.map((chapter, index) => ({ chapter, data: yearData[index] }))
+    }));
+    $('save-note').textContent = 'Progress saves in this browser.';
+  } catch {
+    $('save-note').textContent = 'Storage unavailable — changes last for this visit.';
+  }
+}
+
 let savedAnnual = {};
-try { savedAnnual = JSON.parse(localStorage.getItem('lifequest-annual-v1') || '{}'); } catch {}
+try { savedAnnual = JSON.parse(localStorage.getItem('lifequest-user-months-v1') || '{}'); } catch {}
 
 let savedWeeks = {};
-try { savedWeeks = JSON.parse(localStorage.getItem('lifequest-annual-weeks-v1') || '{}'); } catch {}
+try { savedWeeks = JSON.parse(localStorage.getItem('lifequest-user-weeks-v1') || '{}'); } catch {}
 
 function getMonthStorage(year, mIdx) {
   let key = `${year}_${mIdx}`;
   if (!savedAnnual[key]) {
     let c = monthChapters[mIdx];
     savedAnnual[key] = {
-      tasks: c.tasks.map(t => ({ text: t, done: false })),
+      tasks: [],
       notes: '',
       done: false
     };
@@ -65,10 +68,7 @@ function getWeekStorage(year, mIdx, wNum) {
   let key = `${year}_${mIdx}_${wNum}`;
   if (!savedWeeks[key]) {
     savedWeeks[key] = {
-      tasks: [
-        { text: `Sprint goal ${wNum}A for ${monthChapters[mIdx].name}`, done: false },
-        { text: `Habit & execution block ${wNum}`, done: false }
-      ],
+      tasks: [],
       notes: '',
       done: false
     };
@@ -78,14 +78,565 @@ function getWeekStorage(year, mIdx, wNum) {
 
 
 function getYearChapterName(i) {
-  return (yearData[i] && yearData[i].customName !== undefined && yearData[i].customName.trim()) ? yearData[i].customName : chapters[i].name;
+  return (yearData[i] && yearData[i].customName !== undefined && yearData[i].customName.trim()) ? yearData[i].customName : (chapters[i]?.name || '');
 }
 function getYearChapterTitle(i) {
-  return (yearData[i] && yearData[i].customTitle !== undefined && yearData[i].customTitle.trim()) ? yearData[i].customTitle : chapters[i].title;
+  return (yearData[i] && yearData[i].customTitle !== undefined && yearData[i].customTitle.trim()) ? yearData[i].customTitle : (chapters[i]?.title || '');
 }
 function getYearChapterImage(i) {
   return (yearData[i] && yearData[i].image) || '';
 }
+
+// ========================================
+// MULTIPLE PHOTO STORAGE FOR YEAR MILESTONES
+// ========================================
+
+const YEAR_PHOTO_DB = 'lifequest-hierarchy-photos-v1';
+const YEAR_PHOTO_LIMIT = 10;
+
+function hasYearChapterImage(i) {
+  return Boolean(getYearChapterImage(i) || yearData[i]?.hasGalleryPhotos);
+}
+
+function yearPhotoPrefix(i) {
+  return `year-gallery:${chapters[i].year}:`;
+}
+
+// ========================================
+// SHARED PHOTO GALLERY HELPERS
+// ========================================
+// Every milestone stores its extra gallery photos in the same IndexedDB
+// database it already used. Extra photos use a key prefix, so the original
+// single photo (or primary key) keeps working exactly as before.
+
+const LQ_GALLERY_LIMIT = 10;
+
+function lqOpenPhotoStore(dbName, storeName) {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(dbName, 1);
+
+    request.onupgradeneeded = () => {
+      if (!request.result.objectStoreNames.contains(storeName)) {
+        request.result.createObjectStore(storeName);
+      }
+    };
+
+    request.onerror = () => reject(request.error);
+
+    request.onsuccess = () => {
+      const db = request.result;
+
+      if (!db.objectStoreNames.contains(storeName)) {
+        db.close();
+        reject(new Error('The Life Quest photo store is unavailable.'));
+        return;
+      }
+
+      resolve(db);
+    };
+  });
+}
+
+// A small IndexedDB wrapper used by every gallery:
+// mode = 'get' | 'put' | 'delete' | 'list'
+function lqPhotoOp(dbName, storeName, mode, key, blob) {
+  return lqOpenPhotoStore(dbName, storeName).then(db => {
+    return new Promise((resolve, reject) => {
+      const readOnly = mode === 'list' || mode === 'get';
+      const tx = db.transaction(storeName, readOnly ? 'readonly' : 'readwrite');
+      const store = tx.objectStore(storeName);
+      let result;
+
+      if (mode === 'list') {
+        const range = IDBKeyRange.bound(key, key + '\uffff');
+        const keysRequest = store.getAllKeys(range);
+        const valuesRequest = store.getAll(range);
+        let keys = [];
+        let values = [];
+
+        keysRequest.onsuccess = () => { keys = keysRequest.result || []; };
+        valuesRequest.onsuccess = () => { values = valuesRequest.result || []; };
+
+        tx.oncomplete = () => {
+          db.close();
+          resolve(
+            keys.map((storedKey, index) => ({
+              key: storedKey,
+              blob: values[index]
+            })).sort((a, b) =>
+              String(a.key).localeCompare(String(b.key), undefined, { numeric: true })
+            )
+          );
+        };
+      } else {
+        const req =
+          mode === 'put' ? store.put(blob, key) :
+          mode === 'delete' ? store.delete(key) :
+          store.get(key);
+
+        req.onsuccess = () => { result = req.result; };
+
+        tx.oncomplete = () => {
+          db.close();
+          resolve(result);
+        };
+      }
+
+      tx.onerror = () => {
+        db.close();
+        reject(tx.error || new Error('Photo storage failed.'));
+      };
+
+      tx.onabort = () => {
+        db.close();
+        reject(tx.error || new Error('Photo storage was cancelled.'));
+      };
+    });
+  });
+}
+
+async function lqGalleryExtras(dbName, storeName, prefix) {
+  const items = await lqPhotoOp(dbName, storeName, 'list', prefix);
+  return items
+    .filter(item => item.blob instanceof Blob)
+    .map(item => ({
+      key: item.key,
+      src: URL.createObjectURL(item.blob),
+      legacy: false
+    }));
+}
+
+// Release temporary object URLs so the browser can free memory.
+function lqReleaseGallery(gallery, keepSrc = null) {
+  (gallery || []).forEach(item => {
+    if (item.src && item.src !== keepSrc && item.src.startsWith('blob:')) {
+      URL.revokeObjectURL(item.src);
+    }
+  });
+}
+
+// Add selected files without ever replacing existing photos.
+// `occupied` = number of photos the milestone already has (including its
+// original single photo). Returns how many were actually added.
+async function lqAddGalleryFiles(dbName, storeName, prefix, files, occupied) {
+  const selected = Array.from(files || [])
+    .filter(file => file && file.type && file.type.startsWith('image/'));
+
+  if (!selected.length) return { added: 0, skipped: 0 };
+
+  const available = Math.max(0, LQ_GALLERY_LIMIT - occupied);
+
+  if (!available) {
+    alert(`This milestone already has the maximum of ${LQ_GALLERY_LIMIT} photos.`);
+    return { added: 0, skipped: selected.length };
+  }
+
+  const filesToAdd = selected.slice(0, available);
+  const blobs = [];
+
+  for (const file of filesToAdd) {
+    blobs.push(await compressImageToBlob(file));
+  }
+
+  const savedKeys = [];
+
+  try {
+    for (let index = 0; index < blobs.length; index++) {
+      const key = prefix +
+        `${Date.now()}-${index}-${Math.random().toString(36).slice(2, 7)}`;
+      await lqPhotoOp(dbName, storeName, 'put', key, blobs[index]);
+      savedKeys.push(key);
+    }
+  } catch (error) {
+    for (const key of savedKeys) {
+      try { await lqPhotoOp(dbName, storeName, 'delete', key); } catch {}
+    }
+    throw error;
+  }
+
+  if (selected.length > filesToAdd.length) {
+    alert(`Added ${filesToAdd.length} photo(s). The limit is ${LQ_GALLERY_LIMIT} photos per milestone.`);
+  }
+
+  return { added: filesToAdd.length, skipped: selected.length - filesToAdd.length };
+}
+
+window.LQPhotos = {
+  LIMIT: LQ_GALLERY_LIMIT,
+  op: lqPhotoOp,
+  extras: lqGalleryExtras,
+  add: lqAddGalleryFiles,
+  release: lqReleaseGallery,
+  compress: compressImageToBlob
+};
+
+// Save and retrieve year milestone photos using IndexedDB
+function yearPhotoOp(mode, key, blob) {
+  return lqPhotoOp(YEAR_PHOTO_DB, 'photos', mode, key, blob);
+}
+
+// Load all photos belonging to one year milestone
+async function readYearGallery(i) {
+  const gallery = [];
+  const legacyImage = getYearChapterImage(i);
+
+  // Keep the existing single photo as the first photo
+  if (legacyImage) {
+    gallery.push({
+      key: null,
+      src: legacyImage,
+      legacy: true
+    });
+  }
+
+  const stored = await yearPhotoOp('list', yearPhotoPrefix(i));
+
+  stored.forEach(item => {
+    if (item.blob instanceof Blob) {
+      gallery.push({
+        key: item.key,
+        src: URL.createObjectURL(item.blob),
+        legacy: false
+      });
+    }
+  });
+
+  return gallery;
+}
+
+// Release temporary image URLs to avoid memory leaks
+function releaseYearGallery(gallery, keepURL = null) {
+  (gallery || []).forEach(item => {
+    if (
+      !item.legacy &&
+      item.src &&
+      item.src !== keepURL
+    ) {
+      URL.revokeObjectURL(item.src);
+    }
+  });
+}
+
+// Compress uploaded images before saving them
+function compressImageToBlob(file) {
+  return new Promise((resolve, reject) => {
+    if (!file || !file.type.startsWith('image/')) {
+      reject(new Error('Choose a valid image file.'));
+      return;
+    }
+
+    const originalURL = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      const ratio = Math.min(
+        1,
+        1800 / Math.max(image.width, image.height)
+      );
+
+      const width = Math.max(1, Math.round(image.width * ratio));
+      const height = Math.max(1, Math.round(image.height * ratio));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      canvas.getContext('2d').drawImage(
+        image, 0, 0, width, height
+      );
+
+      URL.revokeObjectURL(originalURL);
+
+      canvas.toBlob(blob => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error('Could not process this image.'));
+        }
+      }, 'image/jpeg', 0.88);
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(originalURL);
+      reject(new Error('Could not read this image.'));
+    };
+
+    image.src = originalURL;
+  });
+}
+
+async function addYearGalleryFiles(i, files) {
+    const selected = Array.from(files || [])
+        .filter(file => file && file.type.startsWith('image/'));
+
+    if (!selected.length) return 0;
+
+    const existing = await yearPhotoOp(
+        'list',
+        yearPhotoPrefix(i)
+    );
+
+    const legacyCount = getYearChapterImage(i) ? 1 : 0;
+
+    const available = Math.max(
+        0,
+        YEAR_PHOTO_LIMIT - existing.length - legacyCount
+    );
+
+    if (!available) {
+        alert(`This milestone already has the maximum of ${YEAR_PHOTO_LIMIT} photos.`);
+        return 0;
+    }
+
+    const filesToAdd = selected.slice(0, available);
+    const blobs = [];
+
+    for (const file of filesToAdd) {
+        blobs.push(await compressImageToBlob(file));
+    }
+
+    const savedKeys = [];
+
+    try {
+        for (let index = 0; index < blobs.length; index++) {
+            const key = yearPhotoPrefix(i) +
+                `${Date.now()}-${index}-${Math.random().toString(36).slice(2, 7)}`;
+
+            await yearPhotoOp('put', key, blobs[index]);
+            savedKeys.push(key);
+        }
+    } catch (error) {
+        for (const key of savedKeys) {
+            try {
+                await yearPhotoOp('delete', key);
+            } catch {}
+        }
+
+        throw error;
+    }
+
+    yearData[i].hasGalleryPhotos = true;
+
+    try {
+        persistYearRoadmap();
+    } catch (error) {
+        console.warn('Gallery photos saved, but the map indicator could not be updated.', error);
+    }
+
+    if (selected.length > filesToAdd.length) {
+        alert(`Added ${filesToAdd.length} photo(s). The limit is ${YEAR_PHOTO_LIMIT} photos per milestone.`);
+    }
+
+    if (currentMode === 'years' && selectedYearIdx === i) {
+        selectYearChapter(i);
+    }
+
+    return filesToAdd.length;
+}
+
+
+async function deleteYearGalleryEntry(i, entry) {
+    if (entry.legacy) {
+        delete yearData[i].image;
+    } else {
+        await yearPhotoOp('delete', entry.key);
+    }
+
+    const remaining = await yearPhotoOp(
+        'list',
+        yearPhotoPrefix(i)
+    );
+
+    yearData[i].hasGalleryPhotos = Boolean(
+        getYearChapterImage(i) || remaining.length
+    );
+
+    try {
+        persistYearRoadmap();
+    } catch (error) {
+        console.warn('Photo removed, but the gallery indicator could not be updated.', error);
+    }
+
+    if (currentMode === 'years' && selectedYearIdx === i) {
+        selectYearChapter(i);
+    }
+}
+
+// ========================================
+// MAIN YEAR MILESTONE PHOTO GALLERY
+// ========================================
+
+let mainPointGallery = [];
+let mainPointPhotoIndex = 0;
+let mainPointGalleryToken = 0;
+let mainPointGallerySpec = null;
+
+function lqPad2(n) {
+    return String(n).padStart(2, '0');
+}
+
+function releaseMainPointGallery(gallery) {
+    lqReleaseGallery(gallery);
+}
+
+// Describes where the currently selected milestone keeps its photos.
+// The original single photo stays the first gallery item.
+function currentPointGallerySpec() {
+    if (isYearTarget()) {
+        const i = selectedYearIdx;
+        return {
+            db: YEAR_PHOTO_DB,
+            store: 'photos',
+            prefix: yearPhotoPrefix(i),
+            primaryKey: null,
+            legacySrc: getYearChapterImage(i),
+            isYear: true,
+            clearLegacy: () => { delete yearData[i].image; },
+            saveLegacy: () => {
+                try { persistYearRoadmap(); } catch {}
+            }
+        };
+    }
+
+    if (selectedWeekNode) {
+        const w = selectedWeekNode;
+        const id = `week:${selectedYear}-${lqPad2(w.mIndex + 1)}-${lqPad2(w.weekNum)}`;
+        const wData = getWeekStorage(selectedYear, w.mIndex, w.weekNum);
+        return {
+            db: YEAR_PHOTO_DB,
+            store: 'photos',
+            prefix: `gallery:${id}:`,
+            primaryKey: id,
+            legacySrc: wData.image || '',
+            isWeek: true,
+            clearLegacy: () => { delete wData.image; },
+            saveLegacy: () => {
+                try {
+                    localStorage.setItem('lifequest-user-weeks-v1', JSON.stringify(savedWeeks));
+                } catch {}
+            }
+        };
+    }
+
+    const y = selectedYear;
+    const m = selectedMonthIdx;
+    const id = `${y}_${m}`;
+    const mData = getMonthStorage(y, m);
+    return {
+        db: 'lifequest-month-vision-images',
+        store: 'images',
+        prefix: `gallery:${id}:`,
+        primaryKey: id,
+        legacySrc: mData.image || '',
+        isMonth: true,
+        clearLegacy: () => { delete mData.image; },
+        saveLegacy: () => {
+            try {
+                localStorage.setItem('lifequest-user-months-v1', JSON.stringify(savedAnnual));
+            } catch {}
+        }
+    };
+}
+
+async function readCurrentPointGallery(spec) {
+    const gallery = [];
+    let primaryFound = false;
+
+    if (spec.primaryKey) {
+        const blob = await lqPhotoOp(spec.db, spec.store, 'get', spec.primaryKey);
+        if (blob instanceof Blob) {
+            gallery.push({
+                key: spec.primaryKey,
+                src: URL.createObjectURL(blob),
+                legacy: false,
+                primary: true
+            });
+            primaryFound = true;
+        }
+    }
+
+    // Existing single photo becomes the first photo when there is no
+    // newer primary key stored in IndexedDB.
+    if (!primaryFound && spec.legacySrc) {
+        gallery.push({
+            key: null,
+            src: spec.legacySrc,
+            legacy: true,
+            primary: true
+        });
+    }
+
+    gallery.push(...await lqGalleryExtras(spec.db, spec.store, spec.prefix));
+    return gallery;
+}
+
+function renderMainPointGallery() {
+    const entry = mainPointGallery[mainPointPhotoIndex];
+
+    const nav = $('point-gallery-nav');
+    const previous = $('point-photo-prev');
+    const next = $('point-photo-next');
+    const count = $('point-photo-count');
+
+    if (!entry) {
+        updateImageUI('');
+
+        if (nav) nav.hidden = true;
+        return;
+    }
+
+    updateImageUI(entry.src);
+
+    if (nav) nav.hidden = false;
+
+    if (count) {
+        count.textContent =
+            `${mainPointPhotoIndex + 1} / ${mainPointGallery.length}`;
+    }
+
+    if (previous) {
+        previous.hidden = mainPointGallery.length < 2;
+    }
+
+    if (next) {
+        next.hidden = mainPointGallery.length < 2;
+    }
+}
+
+async function refreshMainPointGallery(preferredIndex = 0) {
+    const token = ++mainPointGalleryToken;
+
+    releaseMainPointGallery(mainPointGallery);
+
+    mainPointGallery = [];
+    mainPointPhotoIndex = 0;
+
+    renderMainPointGallery();
+
+    let gallery = [];
+    const spec = currentPointGallerySpec();
+    mainPointGallerySpec = spec;
+
+    try {
+        gallery = await readCurrentPointGallery(spec);
+    } catch (error) {
+        console.error('Could not load milestone photos:', error);
+    }
+
+    if (token !== mainPointGalleryToken) {
+        releaseMainPointGallery(gallery);
+        return;
+    }
+
+    mainPointGallery = gallery;
+
+    mainPointPhotoIndex = gallery.length
+        ? Math.max(0, Math.min(preferredIndex, gallery.length - 1))
+        : 0;
+
+    renderMainPointGallery();
+}
+
 
 function getMonthChapterName(year, mIdx) {
   let mData = getMonthStorage(year, mIdx);
@@ -102,7 +653,7 @@ function getMonthChapterImage(year, mIdx) {
 
 function getWeekTitle(year, mIdx, wNum) {
   let wData = getWeekStorage(year, mIdx, wNum);
-  return (wData && wData.customTitle !== undefined && wData.customTitle.trim()) ? wData.customTitle : ('Week ' + wNum + ' Execution');
+  return (wData && wData.customTitle !== undefined && wData.customTitle.trim()) ? wData.customTitle : ('Week ' + wNum);
 }
 function getWeekImage(year, mIdx, wNum) {
   let wData = getWeekStorage(year, mIdx, wNum);
@@ -145,7 +696,7 @@ function compressAndSaveImage(file, callback) {
 }
 
 function setImageForCurrentPoint(dataUrl) {
-  if (currentMode === 'years') {
+  if (isYearTarget()) {
     yearData[selectedYearIdx].image = dataUrl;
   } else if (selectedWeekNode) {
     let wData = getWeekStorage(selectedYear, selectedWeekNode.mIndex, selectedWeekNode.weekNum);
@@ -155,9 +706,9 @@ function setImageForCurrentPoint(dataUrl) {
     mData.image = dataUrl;
   }
   saveCurrent();
-  updateImageUI(dataUrl);
   renderNav();
-}
+  refreshMainPointGallery(0);
+  }
 
 function updateImageUI(imgUrl) {
   if (imgUrl) {
@@ -175,11 +726,11 @@ function updateImageUI(imgUrl) {
 
 function saveCurrent() {
   try {
-    if (currentMode === 'years') {
-      localStorage.setItem('lifequest-v1', JSON.stringify(yearData));
+    if (isYearTarget()) {
+      persistYearRoadmap();
     } else {
-      localStorage.setItem('lifequest-annual-v1', JSON.stringify(savedAnnual));
-      localStorage.setItem('lifequest-annual-weeks-v1', JSON.stringify(savedWeeks));
+      localStorage.setItem('lifequest-user-months-v1', JSON.stringify(savedAnnual));
+      localStorage.setItem('lifequest-user-weeks-v1', JSON.stringify(savedWeeks));
     }
   } catch {
     $('save-note').textContent = 'Storage unavailable — changes last for this visit.';
@@ -190,6 +741,10 @@ function saveCurrent() {
 // Canvas & Camera
 const canvas = $('map');
 const ctx = canvas.getContext('2d');
+const missionBackdrop = new Image();
+let missionBackdropReady = false;
+missionBackdrop.onload = () => { missionBackdropReady = true; };
+missionBackdrop.src = 'assets/mission-trail.png';
 let w = 0, h = 0, scale = 1;
 let camX = 480, camY = 2400;
 let targetCamX = 480, targetCamY = 2400;
@@ -216,6 +771,8 @@ function clampCam() {
 
 // Roads generation
 function buildRoadPoints(chList) {
+  if (!chList.length) return [];
+  if (chList.length === 1) return [{ x: chList[0].x, y: chList[0].y }];
   let pts = [];
   for (let j = 0; j < chList.length - 1; j++) {
     let a = chList[j], b = chList[j + 1];
@@ -262,48 +819,7 @@ for (let j = 0; j < monthChapters.length - 1; j++) {
   }
 }
 
-// 12 Months alongside the road between every year (72 roadside milestones)
-const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const MONTH_FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
 const monthMarkers = [];
-for (let j = 0; j < chapters.length - 1; j++) {
-  let a = chapters[j], b = chapters[j + 1];
-  let pts = [], tot = 0, prev = { x: a.x, y: a.y };
-  pts.push({ x: a.x, y: a.y, len: 0, t: 0 });
-  for (let t = 0.002; t <= 1.0001; t += 0.002) {
-    let ease = t * t * (3 - 2 * t);
-    let x = a.x + (b.x - a.x) * ease, y = a.y + (b.y - a.y) * t;
-    tot += Math.hypot(x - prev.x, y - prev.y);
-    pts.push({ x, y, len: tot, t });
-    prev = { x, y };
-  }
-  let marginA = 65, marginB = 75;
-  let usable = tot - marginA - marginB;
-  let step = usable / 11;
-  for (let m = 0; m < 12; m++) {
-    let targetLen = marginA + m * step;
-    let pt = pts.find(p => p.len >= targetLen) || pts[pts.length - 1];
-    let t = pt.t;
-    let dxdt = (b.x - a.x) * 6 * t * (1 - t), dydt = (b.y - a.y);
-    let len = Math.hypot(dxdt, dydt) || 1;
-    let nx = -dydt / len, ny = dxdt / len;
-    let offset = 38;
-    monthMarkers.push({
-      seg: j,
-      mIndex: m,
-      year: a.year,
-      name: MONTH_NAMES[m],
-      fullName: MONTH_FULL[m],
-      isQuarter: (m % 3 === 0),
-      x: Math.round(pt.x + nx * offset),
-      y: Math.round(pt.y + ny * offset),
-      roadX: Math.round(pt.x),
-      roadY: Math.round(pt.y)
-    });
-  }
-}
-
 
 // Procedural environment
 function roadDist(pts, x, y) {
@@ -335,6 +851,83 @@ for (let i = 0; i < 2000; i++) {
 }
 for (let i = 0; i < 150; i++) monthRocks.push({ x: rnd() * W, y: rnd() * 3400, s: 20 + rnd() * 50 });
 
+function rebuildRoadmapLayout() {
+  const stops = [];
+  chapters.forEach((chapter, yearIndex) => {
+    stops.push({ kind: 'year', chapter, yearIndex, year: Number(chapter.year) });
+    MONTH_FULL.forEach((fullName, mIndex) => {
+      stops.push({ kind: 'month', yearIndex, year: Number(chapter.year), mIndex, fullName });
+    });
+  });
+
+  const step = 190;
+  H = Math.max(2700, stops.length * step + 100);
+  const columns = [480, 690, 365, 670, 350, 655, 480];
+  stops.forEach((stop, index) => {
+    stop.x = columns[index % columns.length];
+    stop.y = H - 100 - index * step;
+    if (stop.kind === 'year') {
+      stop.chapter.x = stop.x;
+      stop.chapter.y = stop.y;
+    }
+  });
+
+  yearPoints.splice(0, yearPoints.length, ...buildRoadPoints(stops));
+  monthMarkers.splice(0, monthMarkers.length);
+  stops.forEach((stop, index) => {
+    if (stop.kind !== 'month') return;
+    const before = stops[Math.max(0, index - 1)] || stop;
+    const after = stops[Math.min(stops.length - 1, index + 1)] || stop;
+    const dx = after.x - before.x;
+    const dy = after.y - before.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const side = stop.mIndex % 2 === 0 ? 1 : -1;
+    const nx = -dy / length * side;
+    const ny = dx / length * side;
+    monthMarkers.push({
+      seg: stop.yearIndex, mIndex: stop.mIndex, year: stop.year,
+      name: MONTH_NAMES[stop.mIndex], fullName: stop.fullName,
+      isQuarter: stop.mIndex % 3 === 0,
+      x: Math.round(stop.x + nx * 42), y: Math.round(stop.y + ny * 42),
+      roadX: stop.x, roadY: stop.y
+    });
+  });
+
+  yearTrees.length = 0;
+  yearRocks.length = 0;
+  let state = 184;
+  function random() {
+    state = (state * 16807) % 2147483647;
+    return (state - 1) / 2147483646;
+  }
+  const attempts = Math.min(10000, Math.round(1050 * H / 2700));
+  for (let i = 0; i < attempts; i++) {
+    const x = random() * W;
+    const y = random() * H;
+    const nearRoad = yearPoints.some(p => Math.abs(p.y - y) < 84 && Math.hypot(x - p.x, y - p.y) < 78);
+    const nearStop = stops.some(s => Math.abs(s.y - y) < 130 && Math.hypot(x - s.x, y - s.y) < 140);
+    if (!nearRoad && !nearStop) yearTrees.push({ x, y, s: 12 + random() * 19, t: random() });
+  }
+  const rockCount = Math.min(1500, Math.round(120 * H / 2700));
+  for (let i = 0; i < rockCount; i++) yearRocks.push({ x: random() * W, y: random() * H, s: 20 + random() * 50 });
+
+  if (chapters.length) {
+    const selected = chapters[selectedYearIdx] || chapters[0];
+    player.x = selected.x;
+    player.y = selected.y + 70;
+    targetCamX = selected.x;
+    targetCamY = selected.y;
+  } else {
+    player.x = 480;
+    player.y = H / 2;
+    targetCamX = 480;
+    targetCamY = H / 2;
+  }
+  camX = targetCamX;
+  camY = targetCamY;
+  clampCam();
+}
+
 // Drawing Helpers
 function poly(ps, color) {
   ctx.beginPath();
@@ -353,12 +946,15 @@ function ellipse(x, y, rx, ry, color) {
 
 function tree(t) {
   let { x, y, s } = t;
-  ellipse(x + 7, y + 4, s * .7, s * .28, '#0c211c55');
-  ctx.fillStyle = '#3c3b25';
-  ctx.fillRect(x - 2, y - 12, 4, 16);
-  poly([[x - s * .65, y - 7], [x, y - s * 1.9], [x + s * .65, y - 7]], t.t > .6 ? '#4d6650' : '#365943');
-  poly([[x, y - s * 1.9], [x + s * .65, y - 7], [x + 2, y - 13]], '#203e32');
-  poly([[x - s * .48, y - s * .65], [x, y - s * 2.2], [x + s * .48, y - s * .65]], t.t > .6 ? '#587355' : '#3f644b');
+  const crown = t.t > .58 ? '#4d9b43' : '#39863d';
+  ellipse(x + 5, y + 5, s * .82, s * .35, '#28492b66');
+  ctx.fillStyle = '#76532d';
+  ctx.fillRect(x - 2, y - 4, 5, 13);
+  ellipse(x, y - s * .58, s * .82, s * .61, '#28633a');
+  ellipse(x - s * .36, y - s * .75, s * .48, s * .47, crown);
+  ellipse(x + s * .31, y - s * .77, s * .48, s * .47, t.t > .58 ? '#5eaa49' : '#449247');
+  ellipse(x + s * .02, y - s * 1.12, s * .47, s * .49, t.t > .58 ? '#75ba51' : '#56a348');
+  ellipse(x - s * .13, y - s * 1.25, s * .13, s * .09, '#c4d96c99');
 }
 
 function box(x, y, ww, hh, depth, color) {
@@ -376,7 +972,7 @@ function box(x, y, ww, hh, depth, color) {
 
 function drawRoadsideMonth(m, now) {
   let { x, y, roadX, roadY, name, year, seg, mIndex, isQuarter } = m;
-  let isDone = yearData[seg] && yearData[seg].done;
+  let isDone = getMonthStorage(year, mIndex).done;
   let cur = new Date(), curYear = cur.getFullYear(), curMonth = cur.getMonth();
   let isNow = (year === curYear && mIndex === curMonth);
 
@@ -588,40 +1184,92 @@ function drawWeekStone(w, now) {
 }
 
 // Terrain Renderer
+function drawMissionBackdrop() {
+  const segmentHeight = 190 * (MONTH_FULL.length + 1);
+  const count = Math.max(1, chapters.length);
+  const visibleTop = camY - h / (2 * scale) - segmentHeight;
+  const visibleBottom = camY + h / (2 * scale) + segmentHeight;
+
+  if (!chapters.length) {
+    ctx.drawImage(missionBackdrop, 0, 0, W, H);
+    return;
+  }
+
+  chapters.forEach((_, index) => {
+    const bottom = H - 100 - index * segmentHeight;
+    const top = bottom - segmentHeight;
+    if (bottom < visibleTop || top > visibleBottom) return;
+    ctx.save();
+    if (index % 2 === 1) {
+      ctx.translate(W, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(missionBackdrop, 0, 0, missionBackdrop.naturalWidth, missionBackdrop.naturalHeight,
+      0, top, W, segmentHeight);
+    ctx.restore();
+  });
+
+  // Extend the camp and summit artwork into the map's small end margins.
+  const coveredTop = H - 100 - count * segmentHeight;
+  if (coveredTop > 0 && visibleTop < coveredTop) {
+    ctx.drawImage(missionBackdrop, 0, 0, missionBackdrop.naturalWidth, missionBackdrop.naturalHeight * .1,
+      0, 0, W, coveredTop);
+  }
+  if (visibleBottom > H - 100) {
+    ctx.drawImage(missionBackdrop, 0, missionBackdrop.naturalHeight * .9,
+      missionBackdrop.naturalWidth, missionBackdrop.naturalHeight * .1, 0, H - 100, W, 100);
+  }
+}
+
 function drawTerrain(now) {
   let isYear = currentMode === 'years';
   let curPts = isYear ? yearPoints : monthPoints;
   let curTrees = isYear ? yearTrees : monthTrees;
   let curRocks = isYear ? yearRocks : monthRocks;
+  const useMissionArt = isYear && missionBackdropReady;
 
-  ctx.fillStyle = '#294b3b';
-  ctx.fillRect(0, 0, W, H);
+  if (useMissionArt) {
+    drawMissionBackdrop();
+  } else {
+    const meadow = ctx.createLinearGradient(0, 0, W, H);
+    meadow.addColorStop(0, '#526c49');
+    meadow.addColorStop(.48, '#3c5941');
+    meadow.addColorStop(1, '#293c39');
+    ctx.fillStyle = meadow;
+    ctx.fillRect(0, 0, W, H);
 
-  // Ambient rocks
-  for (let r of curRocks) {
-    ellipse(r.x, r.y, r.s * 2, r.s, '#3a574022');
-    if (r.x < 120 || r.x > 880) {
-      poly([[r.x - r.s, r.y], [r.x, r.y - r.s * 1.2], [r.x + r.s * .8, r.y + 10]], '#4a6455');
-      poly([[r.x, r.y - r.s * 1.2], [r.x + r.s * .8, r.y + 10], [r.x + 4, r.y]], '#304c40');
+    // Ambient rocks for the forest fallback.
+    for (let r of curRocks) {
+      ellipse(r.x, r.y, r.s * 2, r.s, '#496b3a35');
+      if (r.x < 120 || r.x > 880) {
+        poly([[r.x - r.s, r.y], [r.x, r.y - r.s * 1.2], [r.x + r.s * .8, r.y + 10]], '#a4a884');
+        poly([[r.x, r.y - r.s * 1.2], [r.x + r.s * .8, r.y + 10], [r.x + 4, r.y]], '#777f62');
+      }
     }
+
+    // Natural River
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#648a45';
+    ctx.lineWidth = 78;
+    ctx.beginPath();
+    ctx.moveTo(0, 1900);
+    ctx.bezierCurveTo(300, 1940, 110, 1530, 40, 1200);
+    ctx.bezierCurveTo(-40, 900, 190, 650, 110, 0);
+    ctx.stroke();
+    ctx.strokeStyle = '#43b9bd';
+    ctx.lineWidth = 54;
+    ctx.stroke();
+    ctx.strokeStyle = '#8ce0d1aa';
+    ctx.lineWidth = 4;
+    ctx.setLineDash([20, 31]);
+    ctx.stroke();
+    ctx.setLineDash([]);
   }
 
-  // Natural River
-  ctx.strokeStyle = '#315c59';
-  ctx.lineWidth = 56;
-  ctx.beginPath();
-  ctx.moveTo(0, 1900);
-  ctx.bezierCurveTo(300, 1940, 110, 1530, 40, 1200);
-  ctx.bezierCurveTo(-40, 900, 190, 650, 110, 0);
-  ctx.stroke();
-  ctx.strokeStyle = '#477a7077';
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  // Winding Road (3 layers)
+  // Winding sunlit dirt road.
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  for (let [color, width] of [['#142e26', 52], ['#77795a', 39], ['#a0a075', 27]]) {
+  for (let [color, width] of [['#74502e', 59], ['#b77b3f', 48], ['#e0b66d', 36], ['#f0d08b', 23]]) {
     ctx.strokeStyle = color;
     ctx.lineWidth = width;
     ctx.beginPath();
@@ -635,8 +1283,8 @@ function drawTerrain(now) {
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.rotate(a);
-    ctx.strokeStyle = '#dfd49a';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#fff0bd99';
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
     ctx.moveTo(-5, -5);
     ctx.lineTo(1, 0);
@@ -645,8 +1293,8 @@ function drawTerrain(now) {
     ctx.restore();
   }
 
-  // Trees
-  curTrees.forEach(tree);
+  // Trees remain as a fallback when the campaign artwork cannot load.
+  if (!useMissionArt) curTrees.forEach(tree);
 
   if (isYear) {
     // 12 Months alongside the road between every year (72 roadside milestones)
@@ -655,19 +1303,15 @@ function drawTerrain(now) {
     // 7 Year Landmarks
     chapters.forEach((c, i) => {
       let dispName = getYearChapterName(i);
-      let hasImg = Boolean(getYearChapterImage(i));
+      let hasImg = hasYearChapterImage(i);
       drawLandmark(c, i, i === selectedYearIdx, yearData[i].done, String(c.year), dispName, hasImg);
     });
 
-    ctx.font = 'italic 25px Georgia';
-    ctx.fillStyle = '#c4d6b124';
-    ctx.textAlign = 'center';
-    ctx.save();
-    ctx.translate(180, 2230);
-    ctx.rotate(-.3);
-    ctx.fillText('Whispering woods', 0, 0);
-    ctx.restore();
-    ctx.fillText('THE HIGHLANDS', 480, 460);
+    if (!chapters.length) {
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillStyle = '#f3d78b';
+      ctx.fillText('ADD A YEAR TO BEGIN', 480, H / 2);
+    }
   } else {
     // 44 Week Stepping Stones
     weekStones.forEach(w => drawWeekStone(w, now));
@@ -712,18 +1356,41 @@ function renderNav() {
     chapters.forEach((c, i) => {
       let b = document.createElement('button');
       b.className = 'chapter' + (i === selectedYearIdx ? ' active' : '');
-      b.innerHTML = `<span class="num">${yearData[i].done ? '✓' : String(i + 1).padStart(2, '0')}</span><span><small>${c.year}</small><strong>${c.name}</strong></span>`;
-      
-b.onclick = () => {
-    selectYearChapter(i, true);
-    openDreamScene(i);
-};
+      const number = document.createElement('span');
+      number.className = 'num';
+      number.textContent = yearData[i].done ? '✓' : String(i + 1).padStart(2, '0');
+      const label = document.createElement('span');
+      const year = document.createElement('small');
+      year.textContent = c.year;
+      const name = document.createElement('strong');
+      name.textContent = getYearChapterName(i);
+      label.append(year, name);
+      b.append(number, label);
+      b.onclick = () => selectYearChapter(i, true);
 
-      $('chapters').appendChild(b);
+      const row = document.createElement('div');
+      row.className = 'chapter-row';
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'chapter-delete';
+      remove.textContent = 'Delete';
+      remove.setAttribute('aria-label', `Delete year ${c.year}`);
+      remove.title = `Delete year ${c.year}`;
+      remove.onclick = event => {
+        event.stopPropagation();
+        deleteRoadmapYear(i);
+      };
+      row.append(b, remove);
+      $('chapters').appendChild(row);
     });
-    let n = yearData.filter(d => d.done).length;
-    $('count').textContent = n + ' / 7';
-    $('bar').style.width = (n / 7 * 100) + '%';
+    const yearDone = yearData.filter(d => d.done).length;
+    const monthDone = chapters.reduce((count, chapter) => count + MONTH_FULL.reduce(
+      (done, _, month) => done + (savedAnnual[`${chapter.year}_${month}`]?.done ? 1 : 0), 0
+    ), 0);
+    const total = chapters.length * (MONTH_FULL.length + 1);
+    const done = yearDone + monthDone;
+    $('count').textContent = `${done} / ${total}`;
+    $('bar').style.width = (total ? done / total * 100 : 0) + '%';
   } else {
     monthChapters.forEach((c, i) => {
       let mData = getMonthStorage(selectedYear, i);
@@ -776,9 +1443,45 @@ function renderTasks(tasks) {
   });
 }
 
-// Select in 7-Year Campaign
+// Select a user-created year.
 function selectYearChapter(i, move = false) {
+  if (!chapters[i] || !yearData[i]) {
+    selectedRoadmapMonth = false;
+    $('detail-eyebrow').textContent = 'YOUR ROADMAP';
+    $('chapter-number').textContent = 'NO YEARS';
+    $('badge').textContent = '—';
+    $('biome').textContent = 'ADD A YEAR TO BEGIN';
+    $('point-name-input').value = '';
+    $('point-title-input').value = '';
+    $('goal').textContent = '';
+    $('maptitle').textContent = 'Your roadmap';
+    $('description').textContent = 'Add a year to create its 12 monthly milestones on this same road.';
+    $('notes').value = '';
+    $('complete').disabled = true;
+    $('add').disabled = true;
+    $('point-name-input').disabled = true;
+    $('point-title-input').disabled = true;
+    $('notes').disabled = true;
+    $('image-file-input').disabled = true;
+    $('toggle-url-btn').disabled = true;
+    $('remove-img-btn').disabled = true;
+    renderTasks([]);
+    updateImageUI('');
+    renderNav();
+    return;
+  }
+
+  selectedRoadmapMonth = false;
+  $('complete').disabled = false;
+  $('add').disabled = false;
+  $('point-name-input').disabled = false;
+  $('point-title-input').disabled = false;
+  $('notes').disabled = false;
+  $('image-file-input').disabled = false;
+  $('toggle-url-btn').disabled = false;
+  $('remove-img-btn').disabled = false;
   selectedYearIdx = i;
+  selectedYear = Number(chapters[i].year);
   let c = chapters[i];
   let curData = yearData[i];
   let name = getYearChapterName(i);
@@ -786,20 +1489,20 @@ function selectYearChapter(i, move = false) {
   let image = getYearChapterImage(i);
 
   $('detail-eyebrow').textContent = 'MISSION BRIEFING';
-  $('chapter-number').textContent = String(i + 1).padStart(2, '0') + ' / 07';
+  $('chapter-number').textContent = String(i + 1).padStart(2, '0') + ' / ' + String(chapters.length).padStart(2, '0');
   $('badge').textContent = c.year;
-  $('biome').textContent = c.place.toUpperCase();
+  $('biome').textContent = name.toUpperCase();
   $('point-name-input').value = (curData.customName !== undefined) ? curData.customName : c.name;
   $('point-title-input').value = (curData.customTitle !== undefined) ? curData.customTitle : c.title;
   $('goal').textContent = title;
-  $('maptitle').textContent = title;
+  $('maptitle').textContent = title || name;
   $('description').textContent = c.desc;
-  $('location').textContent = 'CHAPTER ' + String(i + 1).padStart(2, '0') + ' · ' + name.toUpperCase();
+  $('location').textContent = 'YEAR ' + c.year + ' · ' + name.toUpperCase();
   $('notes').value = curData.notes;
   $('complete').textContent = curData.done ? '✓ Achieved · click to undo' : '⚑ Mark milestone achieved';
   $('cal-link').style.display = 'none';
 
-  updateImageUI(image);
+  refreshMainPointGallery(0);
   renderTasks(curData.tasks);
   renderNav();
 
@@ -815,8 +1518,9 @@ function selectYearChapter(i, move = false) {
   }
 }
 
-// Select Month Landmark in 12-Month Road
+// Select a month stop on the main roadmap.
 function selectMonthChapter(i, move = false) {
+  selectedRoadmapMonth = currentMode === 'years';
   selectedMonthIdx = i;
   selectedWeekNode = null;
   let c = monthChapters[i];
@@ -843,7 +1547,7 @@ function selectMonthChapter(i, move = false) {
   $('cal-link').href = 'https://calendar.google.com/calendar/r/month/' + selectedYear + '/' + mm + '/01';
   $('cal-link-text').textContent = 'Open ' + name + ' ' + selectedYear + ' in Google Calendar ↗';
 
-  updateImageUI(image);
+  refreshMainPointGallery(0);
   renderTasks(curData.tasks);
   renderNav();
 
@@ -859,7 +1563,7 @@ function selectMonthChapter(i, move = false) {
   }
 }
 
-// Hop Week by Week in 12-Month Road
+// Select a week from the current month.
 function selectWeekNode(w) {
   selectedWeekNode = w;
   selectedMonthIdx = w.mIndex;
@@ -878,7 +1582,7 @@ function selectWeekNode(w) {
   $('point-title-input').value = (curData.customTitle !== undefined) ? curData.customTitle : title;
   $('goal').textContent = title;
   $('maptitle').textContent = w.monthName + ' · ' + title;
-  $('description').textContent = 'Focus on your week ' + w.weekNum + ' deliverables for ' + w.monthName + ' ' + selectedYear + '. Hop from milestone to milestone along the road!';
+  $('description').textContent = 'Add the objectives you want to focus on this week.';
   $('location').textContent = w.monthName.toUpperCase() + ' · WEEK 0' + w.weekNum;
   $('notes').value = curData.notes;
   $('complete').textContent = curData.done ? '✓ Week completed · click to undo' : '⚑ Mark week completed';
@@ -888,7 +1592,7 @@ function selectWeekNode(w) {
   $('cal-link').href = 'https://calendar.google.com/calendar/r/month/' + selectedYear + '/' + mm + '/01';
   $('cal-link-text').textContent = 'Open ' + w.monthName + ' ' + selectedYear + ' in Google Calendar ↗';
 
-  updateImageUI(image);
+  refreshMainPointGallery(0);
   renderTasks(curData.tasks);
   renderNav();
 
@@ -905,39 +1609,153 @@ function selectWeekNode(w) {
   toast('Hopped to ' + w.monthName + ' Week ' + w.weekNum + '!');
 }
 
-// Mode Switcher (Years vs Months)
+// The year and month markers share one roadmap.
 function switchMode(mode) {
-  currentMode = mode;
-  $('switch-years').classList.toggle('active', mode === 'years');
-  $('switch-months').classList.toggle('active', mode === 'months');
-  $('switch-years').setAttribute('aria-selected', mode === 'years');
-  $('switch-months').setAttribute('aria-selected', mode === 'months');
-  $('year-select').style.display = (mode === 'months') ? 'inline-block' : 'none';
-
-  if (mode === 'years') {
-    H = 2700;
-    $('region-tag').innerHTML = 'THE EMERALD FRONTIER<small id="location">CHAPTER 01 · THE BEGINNING</small>';
-    selectYearChapter(selectedYearIdx, true);
-    toast('Switched to 7-Year Campaign (2026–2032)');
-  } else {
-    H = 3400;
-    $('region-tag').innerHTML = `${selectedYear} EXPEDITION ROAD<small id="location">MONTH 01 · JANUARY</small>`;
-    selectMonthChapter(selectedMonthIdx, true);
-    toast(`Switched to ${selectedYear} 12-Month Road · Hop Week by Week!`);
-  }
+  if (mode !== 'years') return;
+  currentMode = 'years';
+  $('switch-years').classList.add('active');
+  $('switch-months').classList.remove('active');
+  $('switch-years').setAttribute('aria-selected', 'true');
+  $('switch-months').setAttribute('aria-selected', 'false');
+  $('year-select').hidden = true;
+  rebuildRoadmapLayout();
+  $('region-tag').innerHTML = 'MY ROADMAP<small id="location">YOUR YEARS AND MONTHS</small>';
+  selectYearChapter(selectedYearIdx, true);
   resize();
 }
-
 $('switch-years').onclick = () => switchMode('years');
 $('switch-months').onclick = () => switchMode('months');
 $('year-select').onchange = e => {
   selectedYear = parseInt(e.target.value, 10);
   switchMode('months');
 };
+function refreshYearOptions() {
+  const select = $('year-select');
+  select.replaceChildren(...chapters.map(chapter => new Option(String(chapter.year), String(chapter.year))));
+  if (chapters.length) select.value = String(chapters[selectedYearIdx]?.year || chapters[0].year);
+}
 
+function addRoadmapYear(details) {
+  const year = Number(details.year);
+  if (!Number.isInteger(year) || year < 1900 || year > 2200) throw new Error('Enter a year between 1900 and 2200.');
+  if (chapters.some(chapter => Number(chapter.year) === year)) throw new Error(`Year ${year} is already on your roadmap.`);
+
+  const name = String(details.name || '').trim() || `Year ${year}`;
+  const chapter = {
+    year, name, place: name,
+    title: String(details.title || '').trim(),
+    desc: String(details.description || '').trim(),
+    x: 480, y: 0, type: 'camp'
+  };
+  const records = chapters.map((item, index) => ({ chapter: item, data: yearData[index] }));
+  records.push({ chapter, data: {
+    tasks: Array.isArray(details.tasks) ? details.tasks : [], notes: '',
+    done: Boolean(details.done), hasGalleryPhotos: Boolean(details.hasGalleryPhotos)
+  } });
+  records.sort((a, b) => Number(a.chapter.year) - Number(b.chapter.year));
+  chapters.splice(0, chapters.length, ...records.map(record => record.chapter));
+  yearData.splice(0, yearData.length, ...records.map(record => record.data));
+
+  selectedYearIdx = chapters.findIndex(item => Number(item.year) === year);
+  selectedYear = year;
+  currentMode = 'years';
+  selectedRoadmapMonth = false;
+  refreshYearOptions();
+  rebuildRoadmapLayout();
+  persistYearRoadmap();
+  selectYearChapter(selectedYearIdx, true);
+  renderNav();
+  window.dispatchEvent(new Event('lifequest:roadmap-change'));
+  if (!details.silent) toast(`Year ${year} added with 12 months.`);
+  return chapter;
+}
+
+async function deleteRoadmapYear(index) {
+  const chapter = chapters[index];
+  if (!chapter) return;
+  const year = Number(chapter.year);
+  const photoPrefix = yearPhotoPrefix(index);
+  if (!confirm(`Delete ${year} and its month, week, day plans, and photos? This cannot be undone.`)) return;
+
+  let hierarchyState = {};
+  try { hierarchyState = JSON.parse(localStorage.getItem('lifequest-user-hierarchy-v1') || '{}'); } catch {}
+  const hierarchyIDs = Object.keys(hierarchyState).filter(key =>
+    key.startsWith(`week:${year}-`) || key.startsWith(`day:${year}-`)
+  );
+  const nestedGoalIDs = hierarchyIDs.flatMap(key =>
+    (Array.isArray(hierarchyState[key]?.milestones) ? hierarchyState[key].milestones : [])
+      .map(milestone => milestone?.id).filter(Boolean)
+  );
+  hierarchyIDs.forEach(key => delete hierarchyState[key]);
+
+  chapters.splice(index, 1);
+  yearData.splice(index, 1);
+  Object.keys(savedAnnual).forEach(key => { if (key.startsWith(`${year}_`)) delete savedAnnual[key]; });
+  Object.keys(savedWeeks).forEach(key => { if (key.startsWith(`${year}_`)) delete savedWeeks[key]; });
+  try {
+    localStorage.setItem('lifequest-user-months-v1', JSON.stringify(savedAnnual));
+    localStorage.setItem('lifequest-user-weeks-v1', JSON.stringify(savedWeeks));
+    localStorage.setItem('lifequest-user-hierarchy-v1', JSON.stringify(hierarchyState));
+    const photos = await yearPhotoOp('list', photoPrefix);
+    for (const photo of photos) await yearPhotoOp('delete', photo.key);
+    for (const id of hierarchyIDs) {
+      await lqPhotoOp('lifequest-hierarchy-photos-v1', 'photos', 'delete', id);
+      const extras = await lqPhotoOp('lifequest-hierarchy-photos-v1', 'photos', 'list', `gallery:${id}:`);
+      for (const photo of extras) await lqPhotoOp('lifequest-hierarchy-photos-v1', 'photos', 'delete', photo.key);
+    }
+    for (const id of nestedGoalIDs) {
+      await lqPhotoOp('lifequest-hierarchy-photos-v1', 'photos', 'delete', `goal:${id}`);
+      const extras = await lqPhotoOp('lifequest-hierarchy-photos-v1', 'photos', 'list', `gallery:goal:${id}:`);
+      for (const photo of extras) await lqPhotoOp('lifequest-hierarchy-photos-v1', 'photos', 'delete', photo.key);
+    }
+    for (let month = 0; month < 12; month++) {
+      const id = `${year}_${month}`;
+      await lqPhotoOp('lifequest-month-vision-images', 'images', 'delete', id);
+      const extras = await lqPhotoOp('lifequest-month-vision-images', 'images', 'list', `gallery:${id}:`);
+      for (const photo of extras) await lqPhotoOp('lifequest-month-vision-images', 'images', 'delete', photo.key);
+    }
+  } catch (error) {
+    console.warn(`Some stored data for ${year} could not be removed.`, error);
+  }
+
+  selectedYearIdx = Math.max(0, Math.min(index, chapters.length - 1));
+  selectedYear = chapters[selectedYearIdx]?.year || new Date().getFullYear();
+  selectedRoadmapMonth = false;
+  refreshYearOptions();
+  rebuildRoadmapLayout();
+  persistYearRoadmap();
+  selectYearChapter(selectedYearIdx, true);
+  renderNav();
+  window.dispatchEvent(new Event('lifequest:roadmap-change'));
+}
+
+function selectRoadmapYear(year) {
+  const index = chapters.findIndex(chapter => Number(chapter.year) === Number(year));
+  if (index < 0) return;
+  selectedYearIdx = index;
+  selectedYear = Number(year);
+  selectedRoadmapMonth = false;
+  currentMode = 'years';
+  selectYearChapter(index, true);
+}
+
+window.LQRoadmap = {
+  unified: true,
+  addYear: addRoadmapYear,
+  deleteYear: deleteRoadmapYear,
+  selectYear: selectRoadmapYear,
+  get nextYear() {
+    let year = new Date().getFullYear();
+    while (chapters.some(chapter => Number(chapter.year) === year)) year++;
+    return year;
+  },
+  get firstYear() { return chapters.length ? Number(chapters[0].year) : null; },
+  get lastYear() { return chapters.length ? Number(chapters[chapters.length - 1].year) : null; },
+  get hasYears() { return chapters.length > 0; }
+};
 // Notes & Tasks Actions
 $('notes').oninput = () => {
-  if (currentMode === 'years') {
+  if (isYearTarget()) {
     yearData[selectedYearIdx].notes = $('notes').value;
   } else if (selectedWeekNode) {
     let wData = getWeekStorage(selectedYear, selectedWeekNode.mIndex, selectedWeekNode.weekNum);
@@ -950,7 +1768,7 @@ $('notes').oninput = () => {
 };
 
 $('add').onclick = () => {
-  if (currentMode === 'years') {
+  if (isYearTarget()) {
     yearData[selectedYearIdx].tasks.push({ text: 'My next step', done: false });
     renderTasks(yearData[selectedYearIdx].tasks);
   } else if (selectedWeekNode) {
@@ -968,7 +1786,7 @@ $('add').onclick = () => {
 };
 
 $('complete').onclick = () => {
-  if (currentMode === 'years') {
+  if (isYearTarget()) {
     yearData[selectedYearIdx].done = !yearData[selectedYearIdx].done;
     saveCurrent();
     selectYearChapter(selectedYearIdx);
@@ -999,9 +1817,10 @@ function toast(s) {
 // Live Editing of Milestone Names & Objectives
 $('point-name-input').oninput = () => {
   let val = $('point-name-input').value;
-  if (currentMode === 'years') {
+  if (isYearTarget()) {
     yearData[selectedYearIdx].customName = val;
     let effective = val.trim() || chapters[selectedYearIdx].name;
+    $('biome').textContent = effective.toUpperCase();
     $('location').textContent = 'CHAPTER ' + String(selectedYearIdx + 1).padStart(2, '0') + ' · ' + effective.toUpperCase();
   } else if (selectedWeekNode) {
     let wData = getWeekStorage(selectedYear, selectedWeekNode.mIndex, selectedWeekNode.weekNum);
@@ -1022,15 +1841,15 @@ $('point-name-input').oninput = () => {
 
 $('point-title-input').oninput = () => {
   let val = $('point-title-input').value;
-  if (currentMode === 'years') {
+  if (isYearTarget()) {
     yearData[selectedYearIdx].customTitle = val;
-    let effective = val.trim() || chapters[selectedYearIdx].title;
+    let effective = val.trim() || chapters[selectedYearIdx].title || getYearChapterName(selectedYearIdx);
     $('goal').textContent = effective;
     $('maptitle').textContent = effective;
   } else if (selectedWeekNode) {
     let wData = getWeekStorage(selectedYear, selectedWeekNode.mIndex, selectedWeekNode.weekNum);
     wData.customTitle = val;
-    let effective = val.trim() || ('Week ' + selectedWeekNode.weekNum + ' Execution');
+    let effective = val.trim() || ('Week ' + selectedWeekNode.weekNum);
     $('goal').textContent = effective;
     $('maptitle').textContent = selectedWeekNode.monthName + ' · ' + effective;
   } else {
@@ -1045,14 +1864,41 @@ $('point-title-input').oninput = () => {
 };
 
 // Vision Image Handlers
-$('image-file-input').onchange = e => {
-  let file = e.target.files && e.target.files[0];
-  if (!file) return;
-  compressAndSaveImage(file, dataUrl => {
-    setImageForCurrentPoint(dataUrl);
-    toast('Milestone vision image uploaded!');
-  });
-  e.target.value = '';
+// Multiple photo upload handler (years, months, weeks and days)
+$('image-file-input').onchange = async e => {
+    const files = Array.from(e.target.files || []);
+
+    e.target.value = '';
+
+    if (!files.length) return;
+
+    try {
+        if (isYearTarget()) {
+            const added = await addYearGalleryFiles(selectedYearIdx, files);
+            if (added) {
+                toast(`${added} photo(s) added successfully!`);
+                await refreshMainPointGallery(mainPointGallery.length);
+            }
+            return;
+        }
+
+        const spec = mainPointGallerySpec || currentPointGallerySpec();
+        const result = await lqAddGalleryFiles(
+            spec.db,
+            spec.store,
+            spec.prefix,
+            files,
+            mainPointGallery.length
+        );
+
+        if (result.added) {
+            toast(`${result.added} photo(s) added successfully!`);
+            if (spec.saveLegacy) spec.saveLegacy();
+            await refreshMainPointGallery(mainPointGallery.length);
+        }
+    } catch (error) {
+        alert('Could not upload photos: ' + error.message);
+    }
 };
 
 $('toggle-url-btn').onclick = () => {
@@ -1079,9 +1925,61 @@ $('cancel-url-btn').onclick = () => {
   $('url-drawer').style.display = 'none';
 };
 
-$('remove-img-btn').onclick = () => {
-  setImageForCurrentPoint('');
-  toast('Vision image removed');
+$('remove-img-btn').onclick = async () => {
+    const entry = mainPointGallery[mainPointPhotoIndex];
+
+    if (!entry) return;
+
+    if (!confirm('Delete this photo?')) return;
+
+    try {
+        const oldIndex = mainPointPhotoIndex;
+
+        if (isYearTarget()) {
+            await deleteYearGalleryEntry(selectedYearIdx, entry);
+        } else {
+            const spec = mainPointGallerySpec || currentPointGallerySpec();
+
+            if (entry.legacy) {
+                spec.clearLegacy();
+            } else if (entry.key) {
+                await lqPhotoOp(spec.db, spec.store, 'delete', entry.key);
+            }
+
+            if (spec.saveLegacy) spec.saveLegacy();
+        }
+
+        await refreshMainPointGallery(
+            Math.max(0, oldIndex - 1)
+        );
+
+        toast('Photo deleted successfully!');
+
+    } catch (error) {
+        alert('Could not delete photo: ' + error.message);
+    }
+};
+
+// Previous photo
+$('point-photo-prev').onclick = () => {
+    if (mainPointGallery.length < 2) return;
+
+    mainPointPhotoIndex =
+        (mainPointPhotoIndex - 1 + mainPointGallery.length)
+        % mainPointGallery.length;
+
+    renderMainPointGallery();
+};
+
+// Next photo
+$('point-photo-next').onclick = () => {
+    if (mainPointGallery.length < 2) return;
+
+    mainPointPhotoIndex =
+        (mainPointPhotoIndex + 1)
+        % mainPointGallery.length;
+
+    renderMainPointGallery();
 };
 
 $('view-full-img-btn').onclick = $('point-img-element').onclick = () => {
@@ -1308,11 +2206,11 @@ function loop(now) {
   if (currentMode === 'years') {
     let nearCh = chapters.findIndex(c => Math.hypot(c.x - viewX, (c.y - viewY) * .8) < 130);
     if (nearCh >= 0) {
-      $('location').textContent = 'CHAPTER ' + String(nearCh + 1).padStart(2, '0') + ' · ' + getYearChapterName(nearCh).toUpperCase();
+      $('location').textContent = 'YEAR ' + chapters[nearCh].year + ' · ' + getYearChapterName(nearCh).toUpperCase();
     } else {
       let nearMonth = monthMarkers.find(m => Math.hypot(m.roadX - viewX, m.roadY - viewY) < 45);
       if (nearMonth) {
-        $('location').textContent = 'CHAPTER ' + String(nearMonth.seg + 1).padStart(2, '0') + ' · ' + nearMonth.name.toUpperCase() + ' ' + nearMonth.year;
+        $('location').textContent = nearMonth.fullName.toUpperCase() + ' ' + nearMonth.year;
       }
     }
   } else {
@@ -1376,7 +2274,13 @@ function loop(now) {
 }
 
 // Initial Launch
+rebuildRoadmapLayout();
+refreshYearOptions();
+renderNav();
 selectYearChapter(0);
+$('switch-years').textContent = 'My Roadmap';
+$('switch-months').hidden = true;
+$('year-select').hidden = true;
 resize();
 requestAnimationFrame(loop);
 
@@ -1554,16 +2458,84 @@ requestAnimationFrame(loop);
 
 let activeDreamIndex = 0;
 
-// Imagination text for each milestone
-const dreamCaptions = {
-    2027: "I walk into my company feeling confident and capable.",
-    2028: "I have built the skills to create the future I imagined.",
-    2029: "My work and knowledge have made me an expert in networking.",
-    2030: "I am finally behind the wheel of my dream car.",
-    2031: "I pull up in my Lamborghini outside our beautiful mansion. Mum and Dad are home.",
-    2032: "I am debt-free and ready for the next adventure."
-};
+const dreamCaptions = {};
 
+
+// Photo gallery state for the full-screen Dream Mode.
+// This is separate from the year Previous / Next controls.
+let dreamGallery = [];
+let dreamPhotoIndex = 0;
+let dreamGalleryToken = 0;
+
+function renderDreamGallery() {
+    const entry = dreamGallery[dreamPhotoIndex];
+    const image = $('dream-photo');
+    const empty = $('dream-empty');
+    const nav = $('dream-photo-nav');
+    const count = $('dream-photo-count');
+    const previous = $('dream-photo-prev');
+    const next = $('dream-photo-next');
+    const dreamStage = document.querySelector('.dream-stage');
+
+    if (!entry) {
+        image.hidden = true;
+        image.removeAttribute('src');
+        empty.hidden = false;
+
+        if (dreamStage) {
+            dreamStage.style.setProperty('--dream-background', 'none');
+        }
+        if (nav) nav.hidden = true;
+        return;
+    }
+
+    image.src = entry.src;
+    image.hidden = false;
+    empty.hidden = true;
+
+    if (dreamStage) {
+        dreamStage.style.setProperty('--dream-background', `url("${entry.src}")`);
+    }
+
+    if (nav) nav.hidden = false;
+
+    if (count) {
+        count.textContent =
+            `${dreamPhotoIndex + 1} / ${dreamGallery.length}`;
+    }
+
+    if (previous) previous.hidden = dreamGallery.length < 2;
+    if (next) next.hidden = dreamGallery.length < 2;
+}
+
+async function refreshDreamGallery(index, preferredIndex = 0) {
+    const token = ++dreamGalleryToken;
+
+    lqReleaseGallery(dreamGallery);
+    dreamGallery = [];
+    dreamPhotoIndex = 0;
+    renderDreamGallery();
+
+    let gallery = [];
+
+    try {
+        gallery = await readYearGallery(index);
+    } catch (error) {
+        console.error('Could not load year photos:', error);
+    }
+
+    if (token !== dreamGalleryToken) {
+        lqReleaseGallery(gallery);
+        return;
+    }
+
+    dreamGallery = gallery;
+    dreamPhotoIndex = gallery.length
+        ? Math.max(0, Math.min(preferredIndex, gallery.length - 1))
+        : 0;
+
+    renderDreamGallery();
+}
 
 // Open a dream in full-screen mode
 function openDreamScene(index) {
@@ -1576,30 +2548,6 @@ function openDreamScene(index) {
     }
 
     const milestone = chapters[activeDreamIndex];
-    const photo = getYearChapterImage(activeDreamIndex);
-    const image = $('dream-photo');
-
-    // Display saved image or placeholder
-    image.hidden = !photo;
-    $('dream-empty').hidden = Boolean(photo);
-
-    if (photo) {
-        image.src = photo;
-    } else {
-        image.removeAttribute('src');
-    }
-
-    
-// Use the same image for the blurred background
-const dreamStage = document.querySelector('.dream-stage');
-
-if (dreamStage) {
-    dreamStage.style.setProperty(
-        '--dream-background',
-        photo ? `url("${photo}")` : 'none'
-    );
-}
-
 
     // Update text
     $('dream-year').textContent = milestone.year;
@@ -1608,12 +2556,15 @@ if (dreamStage) {
         getYearChapterName(activeDreamIndex);
 
     $('dream-caption').textContent =
-        dreamCaptions[milestone.year] || milestone.desc;
+        dreamCaptions[milestone.year] || milestone.desc || 'Add a description to capture your vision.';
 
     // Open full-screen dialog
     if (!$('dream-dialog').open) {
         $('dream-dialog').showModal();
     }
+
+    // Load this year's own photo gallery.
+    refreshDreamGallery(activeDreamIndex, 0);
 }
 
 
@@ -1635,47 +2586,84 @@ $('dream-next').onclick = () => {
 };
 
 
+// Previous PHOTO inside the currently selected year
+$('dream-photo-prev').onclick = () => {
+    if (dreamGallery.length < 2) return;
+
+    dreamPhotoIndex =
+        (dreamPhotoIndex - 1 + dreamGallery.length)
+        % dreamGallery.length;
+
+    renderDreamGallery();
+};
+
+
+// Next PHOTO inside the currently selected year
+$('dream-photo-next').onclick = () => {
+    if (dreamGallery.length < 2) return;
+
+    dreamPhotoIndex =
+        (dreamPhotoIndex + 1)
+        % dreamGallery.length;
+
+    renderDreamGallery();
+};
+
+
 // Open file picker
 $('dream-add-photo').onclick = () => {
     $('dream-file').click();
 };
 
 
-// Upload and save a dream image
-$('dream-file').onchange = event => {
+// Add multiple photos without replacing the existing ones
+$('dream-file').onchange = async event => {
 
-    const file = event.target.files &&
-                 event.target.files[0];
+    const files = Array.from(event.target.files || []);
 
-    if (!file) return;
+    event.target.value = '';
+
+    if (!files.length) return;
 
     const index = activeDreamIndex;
 
-    compressAndSaveImage(file, dataUrl => {
+    try {
+        const added = await addYearGalleryFiles(index, files);
 
-        const previous = yearData[index].image;
-        yearData[index].image = dataUrl;
-
-        try {
-            localStorage.setItem(
-                'lifequest-v1',
-                JSON.stringify(yearData)
-            );
-        } catch (error) {
-            yearData[index].image = previous;
-            alert("Could not save image. Browser storage may be full.");
-            return;
+        if (added) {
+            toast(`${added} photo(s) added successfully!`);
+            await refreshDreamGallery(index, dreamGallery.length);
         }
+    } catch (error) {
+        alert('Could not save photos: ' + error.message);
+    }
+};
 
-        if (currentMode === 'years' &&
-            selectedYearIdx === index) {
-            updateImageUI(dataUrl);
-        }
 
-        openDreamScene(index);
-    });
+// Delete the photo currently shown in Dream Mode.
+// viewer-layout.js uses this so its Delete button removes one photo only.
+async function deleteCurrentDreamPhoto() {
+    const entry = dreamGallery[dreamPhotoIndex];
 
-    event.target.value = '';
+    if (!entry) return;
+
+    if (!confirm('Delete this photo?')) return;
+
+    const index = activeDreamIndex;
+    const oldIndex = dreamPhotoIndex;
+
+    try {
+        await deleteYearGalleryEntry(index, entry);
+        await refreshDreamGallery(index, Math.max(0, oldIndex - 1));
+        toast('Photo deleted successfully!');
+    } catch (error) {
+        alert('Could not delete photo: ' + error.message);
+    }
+}
+
+window.LQDreamGallery = {
+    deleteCurrent: deleteCurrentDreamPhoto,
+    refresh: refreshDreamGallery
 };
 
 

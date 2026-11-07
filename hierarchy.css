@@ -50,6 +50,10 @@ body.hq-active {overflow:hidden}
 #hq-photo{width:100%;max-height:180px;object-fit:contain;background:#08150e;border-radius:5px}
 #hq-photo[hidden]{display:none}
 .hq-photo-actions{display:flex;gap:6px;flex-wrap:wrap}.hq-photo-actions button{font-size:10px;padding:9px}
+.hq-photo-gallery,.hq-goal-gallery{display:flex;align-items:center;gap:10px;justify-content:center}
+.hq-photo-gallery[hidden],.hq-goal-gallery[hidden]{display:none}
+.hq-photo-gallery button,.hq-goal-gallery button{width:38px;height:38px;border-radius:50%;border:1px solid #72966c;background:#193127;color:#f2deae;font-size:20px;line-height:1;padding:0}
+.hq-photo-gallery span,.hq-goal-gallery span{font-size:11px;color:#e5c784;min-width:52px;text-align:center}
 .hq-calendar{display:block;text-align:center;border-radius:7px;padding:14px 10px;font-weight:700;font-size:11px;text-decoration:none;background:#e5c784;color:#182d22;margin:14px 0}
 .hq-advance{background:#395844;color:#f2deae;width:100%;margin:11px 0;border:1px solid #72966c;font-weight:700;font-size:12px}
 .hq-done{width:100%;margin:12px 0 6px;background:#304b37;color:#f3d68c;font-weight:700;font-size:11px}

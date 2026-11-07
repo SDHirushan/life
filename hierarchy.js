@@ -1,6 +1,4 @@
-/* Life Quest • Week & Day Roads
-   Extra layer — loads after app.js, custom-milestones.js, month-visions.js.
-   Existing campaign, month images, and daily reviews remain untouched. */
+/* Life Quest week and day planners, opened from a month on the unified roadmap. */
 (() => {
   'use strict';
   const by = id => document.getElementById(id);
@@ -8,7 +6,7 @@
     console.warn('Life Quest base map must load before hierarchy.js');
     return;
   }
-  const STORAGE = 'lifequest-hierarchy-v1';
+  const STORAGE = 'lifequest-user-hierarchy-v1';
   const PHOTO_DB = 'lifequest-hierarchy-photos-v1';
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const WD = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -67,8 +65,13 @@
         <div class="hq-section-head"><strong>Extra milestones</strong><span>More dreams for this stop</span></div>
         <div id="hq-goals"></div><button id="hq-add-goal" type="button" class="hq-minor">＋ Add milestone</button>
         <label for="hq-notes">Field notes</label><textarea id="hq-notes" rows="4" placeholder="Ideas, reflection and plans..."></textarea>
-        <div class="hq-photoarea"><strong>Vision picture</strong><img id="hq-photo" alt="Vision for this milestone" hidden><input id="hq-upload" type="file" accept="image/*" hidden>
-          <div class="hq-photo-actions"><button id="hq-upload-btn" type="button">📷 Add / change photo</button><button id="hq-photo-view" type="button" hidden>View full image</button><button id="hq-photo-delete" type="button" hidden>🗑 Delete photo</button></div>
+        <div class="hq-photoarea"><strong id="hq-photo-heading">Week photos</strong><img id="hq-photo" alt="Vision for this milestone" hidden><input id="hq-upload" type="file" accept="image/*" multiple hidden>
+          <div class="hq-photo-actions"><button id="hq-upload-btn" type="button">📷 Add photos (up to 10)</button><button id="hq-photo-view" type="button" hidden>View full image</button><button id="hq-photo-delete" type="button" hidden>🗑 Delete this photo</button></div>
+          <div class="hq-photo-gallery" id="hq-photo-gallery" hidden>
+            <button id="hq-photo-prev" type="button" aria-label="Previous photo">‹</button>
+            <span id="hq-photo-count">1 / 1</span>
+            <button id="hq-photo-next" type="button" aria-label="Next photo">›</button>
+          </div>
         </div>
         <a id="hq-calendar" target="_blank" rel="noopener noreferrer" class="hq-calendar">📅 Open Google Calendar ↗</a>
         <button id="hq-journal" type="button" class="hq-minor" hidden>📔 Write Daily Review</button>
@@ -81,16 +84,27 @@
     <dialog class="hq-goal-dialog" id="hq-goal-dialog"><form method="dialog" id="hq-goal-form">
       <h2 id="hq-goal-heading">Add milestone</h2><label for="hq-goal-title">Milestone name</label><input id="hq-goal-title" maxlength="100" required placeholder="What am I achieving?">
       <label for="hq-goal-desc">Description</label><textarea id="hq-goal-desc" rows="4" placeholder="What does completing this look like?"></textarea>
-      <label for="hq-goal-file">Dream image (optional)</label><img id="hq-goal-preview" class="hq-goal-preview" alt="Milestone vision picture" hidden><button id="hq-goal-image-view" type="button" hidden>View full picture</button><button id="hq-goal-image-delete" type="button" hidden>🗑 Delete goal photo</button><input id="hq-goal-file" type="file" accept="image/*">
+      <label for="hq-goal-file">Dream pictures (optional)</label><img id="hq-goal-preview" class="hq-goal-preview" alt="Milestone vision picture" hidden><button id="hq-goal-image-view" type="button" hidden>View full picture</button><button id="hq-goal-image-delete" type="button" hidden>🗑 Delete this photo</button>
+      <div class="hq-goal-gallery" id="hq-goal-gallery" hidden>
+        <button id="hq-goal-photo-prev" type="button" aria-label="Previous photo">‹</button>
+        <span id="hq-goal-photo-count">1 / 1</span>
+        <button id="hq-goal-photo-next" type="button" aria-label="Next photo">›</button>
+      </div>
+      <input id="hq-goal-file" type="file" accept="image/*" multiple>
       <div class="hq-goal-actions"><button type="button" id="hq-goal-cancel">Cancel</button><button type="submit" id="hq-goal-save">Save milestone</button></div>
     </form></dialog>
   `;
   document.body.appendChild(overlay);
   const get = id => overlay.querySelector('#'+id);
   const c=get('hq-canvas'), g=c.getContext('2d');
-  let level='weeks', yr=2026, mo=0, week=null, nodes=[], selected=0;
+  const hqMissionBackdrop = new Image();
+  hqMissionBackdrop.src = 'assets/mission-trail.png';
+  let level='weeks', yr=new Date().getFullYear(), mo=0, week=null, nodes=[], selected=0;
   let cw=0,ch=0,dpr=1,zoom=1,hqCamY=0,dragging=false,dragMoved=0,lastPointer=null;
   let currentPictureURL=null, currentGoalPictureURL=null, photoToken=0, goalEditing=null;
+  let photoGallery=[], photoIndex=0, goalGallery=[], goalIndex=0;
+  function releasePhotoGallery(){ lqReleaseGallery(photoGallery); photoGallery=[]; photoIndex=0; }
+  function releaseGoalGallery(){ lqReleaseGallery(goalGallery); goalGallery=[]; goalIndex=0; }
   function photoOp(mode,key,blob) {
     return new Promise((resolve,reject)=>{
       const open=indexedDB.open(PHOTO_DB,1);
@@ -153,14 +167,16 @@
     refresh(true);
   }
   function close() {overlay.hidden=true;document.body.classList.remove('hq-active');revoke();}
-  function back() {if(level==='days') openWeeks(yr,mo);else{close();if(currentMode!=='months')switchMode('months');}}
+  function back() {if(level==='days') openWeeks(yr,mo);else{close();if(!window.LQRoadmap?.unified&&currentMode!=='months')switchMode('months');}}
   function ensureYearOption(y) {
     const sel=by('year-select');
     if(![...sel.options].some(o=>Number(o.value)===y))sel.add(new Option(String(y),String(y)));
     sel.value=String(y);
   }
   function enterYear(y) {
-    ensureYearOption(y);selectedYear=y;selectedMonthIdx=0;
+    ensureYearOption(y);selectedYear=y;
+    if(window.LQRoadmap?.unified)return;
+    selectedMonthIdx=0;
     if(currentMode!=='months')switchMode('months');else selectMonthChapter(0,true);
   }
   window.LQHierarchy={openWeeks,openDays,enterYear,close};
@@ -178,6 +194,8 @@
     get('hq-title').value=d.title||'';get('hq-desc').value=d.description||'';get('hq-notes').value=d.notes||'';
     get('hq-done').textContent=d.done?'✓ Achieved · click to undo':'⚑ Mark achieved';
     get('hq-level').textContent=level==='weeks'?'WEEKLY MISSION':'DAILY MISSION';
+    get('hq-photo-heading').textContent=level==='weeks'?'Week photos':'Day photos';
+    get('hq-upload-btn').textContent=level==='weeks'?'Add week photos (up to 10)':'Add day photos (up to 10)';
     get('hq-advance').hidden=level==='days';get('hq-journal').hidden=level!=='days';
     get('hq-calendar').href=n.calendar;
     get('hq-save').textContent='Changes save in this browser';
@@ -208,30 +226,71 @@
       cb.onchange=()=>{m.done=cb.checked;save();renderSidebar();renderCanvas();};
       const name=document.createElement('button');name.type='button';name.className='hq-goallink';name.textContent=m.title;name.title='Edit milestone and picture';name.onclick=()=>openGoalEditor(i);
       const del=document.createElement('button');del.type='button';del.textContent='×';del.title='Delete milestone';
-      del.onclick=async()=>{if(!confirm('Delete this milestone?'))return;nodeData().milestones.splice(i,1);save();renderGoals();renderSidebar();renderCanvas();try{await photoOp('delete',`goal:${m.id}`);}catch{}};
+      del.onclick=async()=>{if(!confirm('Delete this milestone?'))return;nodeData().milestones.splice(i,1);save();renderGoals();renderSidebar();renderCanvas();try{await photoOp('delete',`goal:${m.id}`);const extras=await lqPhotoOp(PHOTO_DB,'photos','list',`gallery:goal:${m.id}:`);for(const item of extras)await photoOp('delete',item.key);}catch{}};
       row.append(cb,name,del);box.append(row);
     });
     if(!nodeData().milestones.length){let p=document.createElement('p');p.className='hq-empty';p.textContent='No extra milestones yet.';box.append(p);}
   }
+  function renderGoalGallery() {
+    const entry=goalGallery[goalIndex];
+    const preview=get('hq-goal-preview');
+    const nav=get('hq-goal-gallery');
+    const count=get('hq-goal-photo-count');
+    const previous=get('hq-goal-photo-prev');
+    const next=get('hq-goal-photo-next');
+
+    currentGoalPictureURL=entry?entry.src:null;
+
+    if(!entry){
+      preview.hidden=true;preview.removeAttribute('src');
+      get('hq-goal-image-view').hidden=true;get('hq-goal-image-delete').hidden=true;
+      if(nav)nav.hidden=true;
+      return;
+    }
+
+    preview.src=entry.src;preview.hidden=false;
+    get('hq-goal-image-view').hidden=false;get('hq-goal-image-delete').hidden=false;
+
+    if(nav)nav.hidden=false;
+    if(count)count.textContent=`${goalIndex+1} / ${goalGallery.length}`;
+    if(previous)previous.hidden=goalGallery.length<2;
+    if(next)next.hidden=goalGallery.length<2;
+  }
   async function loadGoalPhoto(id) {
-    if(currentGoalPictureURL) URL.revokeObjectURL(currentGoalPictureURL);
+    releaseGoalGallery();
     currentGoalPictureURL=null;
     get('hq-goal-preview').hidden=true;get('hq-goal-preview').removeAttribute('src');
     get('hq-goal-image-view').hidden=true;get('hq-goal-image-delete').hidden=true;
+    const nav=get('hq-goal-gallery');if(nav)nav.hidden=true;
     if(!id)return;
-    try {const b=await photoOp('get',`goal:${id}`);
-      if(!(b instanceof Blob)||!get('hq-goal-dialog').open)return;
-      currentGoalPictureURL=URL.createObjectURL(b);
-      get('hq-goal-preview').src=currentGoalPictureURL;get('hq-goal-preview').hidden=false;
-      get('hq-goal-image-view').hidden=false;get('hq-goal-image-delete').hidden=false;
+    const key=`goal:${id}`;
+    const entries=[];
+    try {
+      const b=await photoOp('get',key);
+      if(b instanceof Blob)entries.push({key,src:URL.createObjectURL(b),primary:true});
+      entries.push(...await lqGalleryExtras(PHOTO_DB,'photos',`gallery:${key}:`));
     }catch(e){console.warn('Goal picture could not load',e);}
+    if(!get('hq-goal-dialog').open){lqReleaseGallery(entries);return;}
+    goalGallery=entries;goalIndex=0;renderGoalGallery();
   }
+  get('hq-goal-photo-prev').onclick=()=>{
+    if(goalGallery.length<2)return;
+    goalIndex=(goalIndex-1+goalGallery.length)%goalGallery.length;
+    renderGoalGallery();
+  };
+  get('hq-goal-photo-next').onclick=()=>{
+    if(goalGallery.length<2)return;
+    goalIndex=(goalIndex+1)%goalGallery.length;
+    renderGoalGallery();
+  };
   get('hq-goal-image-delete').onclick=async()=>{
     const item=goalEditing===null?null:nodeData().milestones[goalEditing];
-    if(!item||!confirm('Delete the image for this extra milestone?'))return;
+    const entry=goalGallery[goalIndex];
+    if(!item||!entry||!confirm('Delete this photo from the extra milestone?'))return;
     try {
-      await photoOp('delete',`goal:${item.id}`);
-      item.hasImage=false;save();await loadGoalPhoto(item.id);
+      if(entry.key)await photoOp('delete',entry.key);
+      await loadGoalPhoto(item.id);
+      item.hasImage=goalGallery.length>0;save();
     }catch(err){alert('Could not delete milestone image: '+err.message);}
   };
   get('hq-goal-image-view').onclick=()=>{
@@ -239,7 +298,7 @@
     get('hq-picture-full').src=currentGoalPictureURL;get('hq-picture-dialog').showModal();
   };
   get('hq-goal-dialog').addEventListener('close',()=>{
-    if(currentGoalPictureURL)URL.revokeObjectURL(currentGoalPictureURL);currentGoalPictureURL=null;
+    releaseGoalGallery();currentGoalPictureURL=null;
   });
   function openGoalEditor(i=null){
     goalEditing=i;
@@ -256,35 +315,92 @@
     const goals=nodeData().milestones;
     const old=goalEditing===null?null:goals[goalEditing];
     const item={id:old?.id||`hqgoal-${Date.now()}-${Math.random().toString(36).slice(2)}`,title,description:get('hq-goal-desc').value.trim(),done:old?.done||false,hasImage:old?.hasImage||false};
-    const f=get('hq-goal-file').files[0];
+    const files=Array.from(get('hq-goal-file').files||[]);
     try{
-      if(f){if(!f.type.startsWith('image/'))throw new Error('Choose an image.');await photoOp('put',`goal:${item.id}`,f);item.hasImage=true;}
+      if(files.length){
+        const valid=files.filter(f=>f&&f.type&&f.type.startsWith('image/'));
+        if(!valid.length)throw new Error('Choose an image.');
+        const key=`goal:${item.id}`;
+        let added=0;
+        if(!old||!old.hasImage){
+          await photoOp('put',key,await compressImageToBlob(valid[0]));
+          added=1;
+          const rest=valid.slice(1);
+          if(rest.length)added+=((await lqAddGalleryFiles(PHOTO_DB,'photos',`gallery:${key}:`,rest,1))||{}).added||0;
+        }else{
+          const result=await lqAddGalleryFiles(PHOTO_DB,'photos',`gallery:${key}:`,valid,goalGallery.length);
+          added=result.added;
+        }
+        if(added)item.hasImage=true;
+      }
       if(goalEditing===null)goals.push(item);else goals[goalEditing]=item;
       save();renderGoals();renderSidebar();renderCanvas();get('hq-goal-dialog').close();
     }catch(err){alert('Could not save milestone: '+err.message);}
   };
-  async function loadPhoto(){
-    const token=++photoToken;revoke();const el=get('hq-photo');el.hidden=true;el.removeAttribute('src');get('hq-photo-view').hidden=true;get('hq-photo-delete').hidden=true;
-    try{
-      const file=await photoOp('get',nodes[selected].id);
-      if(token!==photoToken||overlay.hidden)return;
-      if(file instanceof Blob){currentPictureURL=URL.createObjectURL(file);el.src=currentPictureURL;el.hidden=false;get('hq-photo-view').hidden=false;get('hq-photo-delete').hidden=false;}
-    }catch(e){console.warn('Photo unavailable',e);}
+  function renderPhotoGallery(){
+    const entry=photoGallery[photoIndex];
+    const el=get('hq-photo');
+    const nav=get('hq-photo-gallery');
+    const count=get('hq-photo-count');
+    const previous=get('hq-photo-prev');
+    const next=get('hq-photo-next');
+    currentPictureURL=entry?entry.src:null;
+    if(!entry){
+      el.hidden=true;el.removeAttribute('src');
+      get('hq-photo-view').hidden=true;get('hq-photo-delete').hidden=true;
+      if(nav)nav.hidden=true;
+      return;
+    }
+    el.src=entry.src;el.hidden=false;
+    get('hq-photo-view').hidden=false;get('hq-photo-delete').hidden=false;
+    if(nav)nav.hidden=false;
+    if(count)count.textContent=`${photoIndex+1} / ${photoGallery.length}`;
+    if(previous)previous.hidden=photoGallery.length<2;
+    if(next)next.hidden=photoGallery.length<2;
   }
-  function revoke(){if(currentPictureURL)URL.revokeObjectURL(currentPictureURL);currentPictureURL=null;}
+  async function loadPhoto(){
+    const token=++photoToken;revoke();
+    const key=nodes[selected].id;
+    const entries=[];
+    try{
+      const file=await photoOp('get',key);
+      if(file instanceof Blob)entries.push({key,src:URL.createObjectURL(file),primary:true});
+      entries.push(...await lqGalleryExtras(PHOTO_DB,'photos',`gallery:${key}:`));
+    }catch(e){console.warn('Photo unavailable',e);}
+    if(token!==photoToken||overlay.hidden){lqReleaseGallery(entries);return;}
+    photoGallery=entries;photoIndex=0;renderPhotoGallery();
+  }
+  function revoke(){releasePhotoGallery();currentPictureURL=null;}
+  get('hq-photo-prev').onclick=()=>{
+    if(photoGallery.length<2)return;
+    photoIndex=(photoIndex-1+photoGallery.length)%photoGallery.length;
+    renderPhotoGallery();
+  };
+  get('hq-photo-next').onclick=()=>{
+    if(photoGallery.length<2)return;
+    photoIndex=(photoIndex+1)%photoGallery.length;
+    renderPhotoGallery();
+  };
   get('hq-upload-btn').onclick=()=>get('hq-upload').click();
   get('hq-upload').onchange=async e=>{
-    const f=e.target.files[0];e.target.value='';if(!f)return;
-    if(!f.type.startsWith('image/')){alert('Please choose an image.');return;}
+    const files=Array.from(e.target.files||[]);e.target.value='';if(!files.length)return;
+    const valid=files.filter(f=>f&&f.type&&f.type.startsWith('image/'));
+    if(!valid.length){alert('Please choose an image.');return;}
     const key=nodes[selected].id;
-    try{await photoOp('put',key,f);if(nodes[selected].id===key)await loadPhoto();get('hq-save').textContent='Full-quality picture saved ✓';}
-    catch(err){get('hq-save').textContent='Could not save photo. Browser storage may be full.';console.warn(err);}
+    try{
+      const result=await lqAddGalleryFiles(PHOTO_DB,'photos',`gallery:${key}:`,valid,photoGallery.length);
+      if(result.added){
+        if(nodes[selected].id===key)await loadPhoto();
+        get('hq-save').textContent=`${result.added} photo(s) added ✓`;
+      }
+    }catch(err){get('hq-save').textContent='Could not save photo. Browser storage may be full.';console.warn(err);}
   };
   get('hq-photo-delete').onclick=async()=>{
     const key=nodes[selected]?.id;
-    if(!key||!confirm('Delete the photo for this week/day?'))return;
+    const entry=photoGallery[photoIndex];
+    if(!key||!entry||!confirm('Delete this photo for this week/day?'))return;
     try {
-      await photoOp('delete',key);
+      await photoOp('delete',entry.key||key);
       await loadPhoto();
       if(get('hq-picture-dialog').open)get('hq-picture-dialog').close();
       get('hq-save').textContent='Photo deleted ✓';
@@ -369,10 +485,15 @@
   }
   function renderCanvas(){
     if(overlay.hidden||!cw||!ch)return;
-    g.clearRect(0,0,cw,ch);g.fillStyle='#224235';g.fillRect(0,0,cw,ch);
+    const hasMissionBackdrop=hqMissionBackdrop.complete&&hqMissionBackdrop.naturalWidth>0;
+    g.clearRect(0,0,cw,ch);
+    if(hasMissionBackdrop){
+      const topLeft=toScreen(0,0),worldBottom=worldHeight();
+      g.drawImage(hqMissionBackdrop,topLeft.x,topLeft.y,960*zoom,worldBottom*zoom);
+    } else {g.fillStyle='#224235';g.fillRect(0,0,cw,ch);}
     const top=Math.max(0,hqCamY-ch/(2*zoom)-100),bottom=Math.min(worldHeight(),hqCamY+ch/(2*zoom)+100);
     // Deterministic woods, clear winding road and labels.
-    for(let i=0;i<600;i++){
+    for(let i=0;i<(hasMissionBackdrop?0:600);i++){
       let x=((i*173+107)%920)+20,y=((i*281+37)%Math.ceil(worldHeight()));
       if(y<top||y>bottom)continue;
       if(nodes.some((n,j)=>{const p=markerPosition(j);return Math.abs(p.y-y)<100&&Math.abs(p.x-x)<120;}))continue;
@@ -417,7 +538,12 @@
   const dreamControls=document.querySelector('.dream-controls');
   if(dreamControls&&!by('hq-dream-year')){
     const button=document.createElement('button');button.type='button';button.id='hq-dream-year';button.textContent='🗺 Explore this year';dreamControls.append(button);
-    button.onclick=()=>{const year=chapters[typeof activeDreamIndex==='number'?activeDreamIndex:selectedYearIdx]?.year||selectedYear;by('dream-dialog').close();enterYear(year);};
+    button.onclick=()=>{
+      const year=chapters[typeof activeDreamIndex==='number'?activeDreamIndex:selectedYearIdx]?.year||selectedYear;
+      by('dream-dialog').close();
+      enterYear(year);
+      if(window.LQRoadmap?.unified){selectMonthChapter(0,false);openWeeks(year,0);}
+    };
   }
   // Preserve the original year-based image viewer and click handling.
   // On the 12-month canvas, click a month building -> week road;
@@ -440,7 +566,7 @@
   if(toolbar){const b=document.createElement('button');b.id='hq-photo-month';b.type='button';b.textContent='📷 Month Vision';b.title='Monthly photo and Google Calendar';
     toolbar.insertBefore(b,by('overview'));b.onclick=()=>{if(currentMode!=='months'){enterYear(chapters[selectedYearIdx]?.year||selectedYear);}window.LQMonthVisions?.openMonth(selectedYear,selectedMonthIdx);};
   }
-  // Custom milestone years can also be entered, even beyond the default 2032.
+  // A selected user year can be opened in the month and week planners.
   const customViewer=document.querySelector('.extra-vision .extra-actions');
   if(customViewer){const b=document.createElement('button');b.type='button';b.id='hq-custom-year';b.textContent='🗺 Explore this year';customViewer.append(b);
     b.onclick=()=>{const text=document.getElementById('extra-view-year')?.textContent;const y=Number(text);if(Number.isInteger(y)){document.querySelector('.extra-vision')?.close();enterYear(y);}};

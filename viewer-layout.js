@@ -20,7 +20,8 @@
   const edit = document.createElement('button');
   edit.id = 'hq-edit-stop';
   edit.type = 'button';
-  edit.textContent = '✎ Edit week / day';
+  edit.textContent = 'Edit details and photos';
+  edit.title = 'Open the selected week or day details, quests and photos';
   header.insertBefore(edit, overlay.querySelector('#hq-back'));
   edit.addEventListener('click', () => {
     if (!overlay.hidden && !dialog.open) dialog.showModal();
@@ -41,7 +42,14 @@
     remove.id = 'dream-delete-photo';
     remove.textContent = '🗑 Delete photo';
     actions.append(remove);
-    remove.addEventListener('click', () => {
+    remove.addEventListener('click', async () => {
+      // Dream Mode now supports a gallery, so delete only the photo
+      // currently displayed instead of clearing the whole year.
+      if (window.LQDreamGallery?.deleteCurrent) {
+        await window.LQDreamGallery.deleteCurrent();
+        return;
+      }
+
       if (typeof activeDreamIndex !== 'number' || !yearData[activeDreamIndex]?.image) return;
       if (!confirm('Delete this year\'s vision photo?')) return;
       const idx = activeDreamIndex;
