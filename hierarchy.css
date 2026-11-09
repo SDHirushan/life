@@ -1,5 +1,13 @@
 /* Life Quest: real calendar week/day maps */
 body.hq-active {overflow:hidden}
+html.lq-photos-locked .hq-photoarea,
+html.lq-photos-locked #hq-photo,
+html.lq-photos-locked #hq-picture-full,
+html.lq-photos-locked #hq-goal-preview,
+html.lq-photos-locked #hq-goal-image-view,
+html.lq-photos-locked #hq-goal-image-delete,
+html.lq-photos-locked label[for="hq-goal-file"],
+html.lq-photos-locked #hq-goal-file {display:none!important}
 .hq-overlay[hidden],.hq-picture-dialog:not([open]),.hq-goal-dialog:not([open]){display:none!important}
 .hq-overlay{position:fixed;inset:0;z-index:80;background:#0b1b14;color:#e9ebdb;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column}
 .hq-header{min-height:76px;display:flex;align-items:center;gap:12px;padding:12px 22px;border-bottom:1px solid #385042;background:#0e2018}

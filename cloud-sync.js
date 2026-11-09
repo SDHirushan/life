@@ -10,6 +10,46 @@
     !cfg.publishableKey.includes('YOUR-PUBLISHABLE');
   const client = configured && sdk?.createClient
     ? sdk.createClient(cfg.url, cfg.publishableKey) : null;
+
+  // Keep personal photo elements hidden until Supabase confirms a session.
+  // index.html adds this class synchronously, before any app script can render
+  // a photo from browser storage.
+  const photoElements = [
+    '#point-img-element', '#modal-img-display', '#dream-photo',
+    '.mv-background', '.mv-photo', '#hq-photo', '#hq-picture-full',
+    '#hq-goal-preview'
+  ].join(',');
+  function setPhotoLock(locked) {
+    document.documentElement.classList.toggle('lq-photos-locked', locked);
+    if (!locked) return;
+
+    document.querySelectorAll(photoElements).forEach(image => {
+      image.hidden = true;
+      image.removeAttribute('src');
+    });
+    document.querySelector('.dream-stage')?.style.setProperty('--dream-background', 'none');
+    document.querySelectorAll('#image-modal, #dream-dialog, #hq-picture-dialog, .mv-dialog')
+      .forEach(dialog => { if (dialog.open) dialog.close(); });
+  }
+
+  if (client) {
+    client.auth.onAuthStateChange((event, session) => {
+      const signedIn = Boolean(session?.user);
+      if (event === 'INITIAL_SESSION') {
+        setPhotoLock(!signedIn);
+        return;
+      }
+
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        // Keep the current page locked until it reloads with the new session.
+        // This also releases any in-memory photo URLs left by the old session.
+        setPhotoLock(true);
+        location.reload();
+      } else if (!signedIn) {
+        setPhotoLock(true);
+      }
+    });
+  }
   const BUCKET = 'lifequest-photos';
   const STORES = [
     ['lifequest-hierarchy-photos-v1','photos'],
@@ -19,15 +59,15 @@
   const button = document.createElement('button');
   button.type = 'button';
   button.id = 'lifequest-cloud-open';
-  button.textContent = '☁ Cloud';
-  button.title = 'Private Life Quest backup and restore';
+  button.textContent = '☁ Sign in';
+  button.title = 'Sign in to view photos and manage private cloud backups';
   document.querySelector('header')?.appendChild(button);
   const dialog = document.createElement('dialog');
   dialog.id = 'lifequest-cloud-dialog';
   dialog.setAttribute('aria-label','Cloud backup');
   dialog.innerHTML = `
     <h2>☁ Life Quest Cloud</h2>
-    <p id="lqc-user">Sign in to keep your data in your own private cloud.</p>
+    <p id="lqc-user">Sign in to view your saved photos and manage cloud backups.</p>
     <label for="lqc-email">Email</label><input id="lqc-email" type="email" autocomplete="username">
     <label for="lqc-pass">Password</label><input id="lqc-pass" type="password" autocomplete="current-password">
     <div class="lqc-actions"><button id="lqc-signin">Sign in</button><button id="lqc-signup">Create account</button></div>
@@ -58,9 +98,16 @@
     return data.user;
   }
   async function sessionLabel() {
-    try { const u = await user();el('lqc-user').textContent = `Signed in as ${u.email}`; }
-    catch { el('lqc-user').textContent = 'Not signed in'; }
+    try {
+      const u = await user();
+      el('lqc-user').textContent = `Signed in as ${u.email}`;
+      button.textContent = '☁ Cloud';
+    } catch {
+      el('lqc-user').textContent = 'Not signed in. Photos are hidden until you sign in.';
+      button.textContent = '☁ Sign in';
+    }
   }
+  sessionLabel();
   button.onclick = () => { dialog.showModal();sessionLabel();if(!client)say('Configure cloud-config.js first.'); };
   el('lqc-close').onclick = () => dialog.close();
   async function guarded(action) {
