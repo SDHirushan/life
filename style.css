@@ -518,6 +518,37 @@ main {
     pointer-events: none;
 }
 
+/* User photos stay hidden until the cloud auth session is confirmed. */
+html.lq-photos-locked #point-img-element,
+html.lq-photos-locked #modal-img-display,
+html.lq-photos-locked #dream-photo,
+html.lq-photos-locked .mv-background,
+html.lq-photos-locked .mv-photo,
+html.lq-photos-locked #hq-photo,
+html.lq-photos-locked #hq-picture-full,
+html.lq-photos-locked #hq-goal-preview {
+    visibility: hidden !important;
+}
+
+html.lq-photos-locked #img-preview-box,
+html.lq-photos-locked .img-action-buttons,
+html.lq-photos-locked #url-drawer,
+html.lq-photos-locked #point-gallery-nav,
+html.lq-photos-locked .dream-photo-nav,
+html.lq-photos-locked #dream-add-photo,
+html.lq-photos-locked #dream-file,
+html.lq-photos-locked .mv-gallery,
+html.lq-photos-locked #mv-upload,
+html.lq-photos-locked #mv-delete,
+html.lq-photos-locked #hq-photo-gallery,
+html.lq-photos-locked #hq-goal-gallery {
+    display: none !important;
+}
+
+html.lq-photos-locked .dream-stage::before {
+    background-image: none !important;
+}
+
 /* Keep the original image fully visible */
 .dream-photo {
     position: relative;

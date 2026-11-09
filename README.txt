@@ -8,6 +8,7 @@ Features:
 - Photo upload is independently stored for each week and each day.
 - Week/day right panel becomes a popup opened with "Edit week / day".
 - Supabase Cloud: account sign-in, private cloud SAVE + RESTORE including photos.
+- Saved photos are hidden until a Supabase sign-in is confirmed; signing out keeps the browser copies.
 
 To install: first back up your local project and browser data.
 Extract these application files into the same Life Quest project folder.
