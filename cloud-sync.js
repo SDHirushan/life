@@ -14,40 +14,20 @@
   // Keep personal photo elements hidden until Supabase confirms a session.
   // index.html adds this class synchronously, before any app script can render
   // a photo from browser storage.
-  const photoElements = [
-    '#point-img-element', '#modal-img-display', '#dream-photo',
-    '.mv-background', '.mv-photo', '#hq-photo', '#hq-picture-full',
-    '#hq-goal-preview'
-  ].join(',');
   function setPhotoLock(locked) {
     document.documentElement.classList.toggle('lq-photos-locked', locked);
-    if (!locked) return;
-
-    document.querySelectorAll(photoElements).forEach(image => {
-      image.hidden = true;
-      image.removeAttribute('src');
-    });
-    document.querySelector('.dream-stage')?.style.setProperty('--dream-background', 'none');
-    document.querySelectorAll('#image-modal, #dream-dialog, #hq-picture-dialog, .mv-dialog')
-      .forEach(dialog => { if (dialog.open) dialog.close(); });
+    if (locked) {
+      document.querySelectorAll('#image-modal, #dream-dialog, #hq-picture-dialog, .mv-dialog')
+        .forEach(dialog => { if (dialog.open) dialog.close(); });
+    }
   }
 
   if (client) {
     client.auth.onAuthStateChange((event, session) => {
       const signedIn = Boolean(session?.user);
-      if (event === 'INITIAL_SESSION') {
-        setPhotoLock(!signedIn);
-        return;
-      }
-
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        // Keep the current page locked until it reloads with the new session.
-        // This also releases any in-memory photo URLs left by the old session.
-        setPhotoLock(true);
-        location.reload();
-      } else if (!signedIn) {
-        setPhotoLock(true);
-      }
+      // SIGNED_IN can fire when an existing session is re-established too.
+      // Toggle the view directly instead of reloading, which could loop.
+      setPhotoLock(!signedIn);
     });
   }
   const BUCKET = 'lifequest-photos';
